@@ -149,7 +149,7 @@ Page {
             return Qt.formatDateTime(d, "dd.MM hh:mm:ss")
         }
         else {
-            return Qt.formatDateTime(d, "dd.MM h:m:s ap")
+            return Qt.formatDateTime(d, "dd.MM h:mm:ss ap")
         }
     }
 
@@ -160,7 +160,7 @@ Page {
                 return Qt.formatDateTime(d, "hh:mm:ss")
             }
             else {
-                return Qt.formatDateTime(d, "h:m:s ap")
+                return Qt.formatDateTime(d, "h:mm:ss ap")
             }
         }
         else {
@@ -168,7 +168,7 @@ Page {
                 return Qt.formatDateTime(d, "hh:mm")
             }
             else {
-                return Qt.formatDateTime(d, "h:m ap")
+                return Qt.formatDateTime(d, "h:mm ap")
             }
         }
     }
