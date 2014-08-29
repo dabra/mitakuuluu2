@@ -844,10 +844,13 @@ void Client::verifyAndConnect()
         return;
     qDebug() << "Verify and connect";
     // Verify if the user is registered
-    if (!this->phoneNumber.isEmpty() && !this->password.isEmpty())
+    if (!this->phoneNumber.isEmpty() && !this->password.isEmpty()) {
         connectToServer();
-    else
+    }
+    else {
+        getTokenScratch();
         Q_EMIT noAccountData();
+    }
     if (session) {
         delete session;
         session = 0;
