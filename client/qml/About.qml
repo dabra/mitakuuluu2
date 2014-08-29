@@ -38,7 +38,7 @@ Page {
         TopEaster {
             anchors {
                 top: parent.top
-                topMargin: - page.height / 3
+                topMargin: - page.height / 2
                 left: parent.left
                 right: parent.right
             }
