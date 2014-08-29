@@ -1271,18 +1271,19 @@
     <message>
         <location filename="../client/qml/NewVersion.qml" line="30"/>
         <source>New Mitakuuluu version available!</source>
-        <translation type="unfinished"/>
+        <translation>Νέα έκδοση Mitakuuluu διαθέσιμη!</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="40"/>
         <source>Version: v%1</source>
-        <translation type="unfinished"/>
+        <translation>Έκδοση: v%1</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="50"/>
         <source>Release notes: 
 %1</source>
-        <translation type="unfinished"/>
+        <translation>Σημειώσεις έκδοσης:
+%1</translation>
     </message>
 </context>
 <context>

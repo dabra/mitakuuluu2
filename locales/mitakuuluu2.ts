@@ -267,21 +267,6 @@
     </message>
 </context>
 <context>
-    <name>Capture</name>
-    <message>
-        <location filename="../client/qml/Capture.qml" line="482"/>
-        <source>Send</source>
-        <comment>Capture page send title</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../client/qml/Capture.qml" line="483"/>
-        <source>Camera</source>
-        <comment>Capture page default title</comment>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>ChatsPage</name>
     <message>
         <location filename="../client/qml/ChatsPage.qml" line="30"/>
@@ -485,43 +470,43 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../server/src/client.cpp" line="1136"/>
+        <location filename="../server/src/client.cpp" line="1139"/>
         <source>Hidden</source>
         <comment>User hidden own status for privacy</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../server/src/client.cpp" line="1411"/>
+        <location filename="../server/src/client.cpp" line="1414"/>
         <source>Joined the group</source>
         <comment>Notification group event text</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../server/src/client.cpp" line="1414"/>
+        <location filename="../server/src/client.cpp" line="1417"/>
         <source>Left the group</source>
         <comment>Notification group event text</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../server/src/client.cpp" line="1417"/>
+        <location filename="../server/src/client.cpp" line="1420"/>
         <source>Subject: %1</source>
         <comment>Notification group event text</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../server/src/client.cpp" line="1420"/>
+        <location filename="../server/src/client.cpp" line="1423"/>
         <source>Picture changed</source>
         <comment>Notification group event text</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../server/src/client.cpp" line="977"/>
+        <location filename="../server/src/client.cpp" line="980"/>
         <source>Disconnected</source>
         <comment>System connection notification</comment>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../server/src/client.cpp" line="2982"/>
+        <location filename="../server/src/client.cpp" line="2985"/>
         <source>%n messages unread</source>
         <comment>Message notification with unread messages count</comment>
         <translation type="unfinished">
@@ -2759,13 +2744,13 @@ Click Renew to purchase one year of WhatsApp service.</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="../client/qml/main.qml" line="458"/>
+        <location filename="../client/qml/main.qml" line="574"/>
         <source>Disconnecting</source>
         <comment>Disconnect remorse popup</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../client/qml/main.qml" line="765"/>
+        <location filename="../client/qml/main.qml" line="881"/>
         <source>Server experiencing problems with following feature(s): %1</source>
         <translation type="unfinished"></translation>
     </message>

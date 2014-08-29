@@ -1271,18 +1271,19 @@
     <message>
         <location filename="../client/qml/NewVersion.qml" line="30"/>
         <source>New Mitakuuluu version available!</source>
-        <translation type="unfinished"/>
+        <translation>Nieuwe versie van Mitakuuluu beschikbaar!</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="40"/>
         <source>Version: v%1</source>
-        <translation type="unfinished"/>
+        <translation>Versie: v%1</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="50"/>
         <source>Release notes: 
 %1</source>
-        <translation type="unfinished"/>
+        <translation>Release opmerkingen: 
+%1</translation>
     </message>
 </context>
 <context>
@@ -1667,7 +1668,7 @@ Voor naar Mitakuuluu over te schakelen van officiële applicatie gebruik a.u.b. 
         <location filename="../client/qml/RegistrationPage.qml" line="347"/>
         <source>Invalid registration code entered. Please try again.</source>
         <comment>Registration information constructor</comment>
-        <translation>Ongeldige registratie code ingevoerd. Probeer het opnieuw.</translation>
+        <translation>Ongeldige registratiecode ingevoerd. Probeer het opnieuw.</translation>
     </message>
     <message>
         <location filename="../client/qml/RegistrationPage.qml" line="350"/>

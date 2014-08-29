@@ -1271,18 +1271,19 @@
     <message>
         <location filename="../client/qml/NewVersion.qml" line="30"/>
         <source>New Mitakuuluu version available!</source>
-        <translation type="unfinished"/>
+        <translation>È disponibile una nuova versione di Mitakuuluu!</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="40"/>
         <source>Version: v%1</source>
-        <translation type="unfinished"/>
+        <translation>Versione: v%1</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="50"/>
         <source>Release notes: 
 %1</source>
-        <translation type="unfinished"/>
+        <translation>Note di rilascio:
+%1</translation>
     </message>
 </context>
 <context>
@@ -1668,7 +1669,7 @@ Prima di passare a Mitakuuluu per favore usa l&apos;opzione &lt;Remove account&g
         <location filename="../client/qml/RegistrationPage.qml" line="347"/>
         <source>Invalid registration code entered. Please try again.</source>
         <comment>Registration information constructor</comment>
-        <translation type="unfinished"/>
+        <translation>Codice inserito non valido. Riprova.</translation>
     </message>
     <message>
         <location filename="../client/qml/RegistrationPage.qml" line="350"/>

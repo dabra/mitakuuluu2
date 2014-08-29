@@ -1271,18 +1271,18 @@
     <message>
         <location filename="../client/qml/NewVersion.qml" line="30"/>
         <source>New Mitakuuluu version available!</source>
-        <translation type="unfinished"/>
+        <translation>Neue Mitäkuuluu-Version verfügbar!</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="40"/>
         <source>Version: v%1</source>
-        <translation type="unfinished"/>
+        <translation>Version: v%1</translation>
     </message>
     <message>
         <location filename="../client/qml/NewVersion.qml" line="50"/>
         <source>Release notes: 
 %1</source>
-        <translation type="unfinished"/>
+        <translation>Versionshinweise: %1</translation>
     </message>
 </context>
 <context>
