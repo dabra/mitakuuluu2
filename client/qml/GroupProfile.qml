@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import org.nemomobile.thumbnailer 1.0
 import harbour.mitakuuluu2.client 1.0
 import "Utilities.js" as Utilities
 
@@ -60,6 +61,16 @@ Page {
             return model.nickname
         else
             return jid.split("@")[0]
+    }
+
+    onStatusChanged: {
+        if (status == PageStatus.Inactive) {
+
+        }
+        else if (status == PageStatus.Active) {
+            console.log("requesting media for jid: " + jid)
+            Mitakuuluu.requestContactMedia(jid)
+        }
     }
 
     Connections {
@@ -125,6 +136,14 @@ Page {
             if (pjid == page.jid && path.length > 0) {
                 page.avatar = ""
                 page.avatar = path
+            }
+        }
+        onMediaListReceived: {
+            if (pjid === page.jid) {
+                mediaListModel.clear()
+                for (var i = 0; i < mediaList.length; i++) {
+                    mediaListModel.append(mediaList[i])
+                }
             }
         }
     }
@@ -297,10 +316,44 @@ Page {
             font.pixelSize: Theme.fontSizeExtraSmall
         }
 
+        SectionHeader {
+            id: mediaHeader
+            text: qsTr("Media")
+            visible: mediaListView.count > 0
+            anchors {
+                top: subjectCreation.bottom
+                topMargin: Theme.paddinSmall
+                left: parent.left
+                right: page.isPortrait ? parent.right : listView.left
+                rightMargin: THeme.paddingLarge
+            }
+        }
+
+        SilicaListView {
+            id: mediaListView
+            anchors {
+                left: parent.left
+                leftMargin: Theme.paddingLarge
+                right: page.isPortrait ? parent.right : listView.left
+                rightMargin: Theme.paddingLarge
+                top: mediaHeader.bottom
+                topMargin: Theme.paddingSmall
+            }
+            height: Theme.itemSizeMedium
+            orientation: ListView.Horizontal
+            model: mediaListModel
+            delegate: mediaListDelegate
+            visible: count > 0
+            clip: true
+            spacing: Theme.paddingMedium
+
+            HorizontalScrollDecorator {}
+        }
+
         SilicaListView {
             id: listView
             clip: true
-            anchors.top: page.isPortrait ? subjectCreation.bottom : subjectArea.bottom
+            anchors.top: page.isPortrait ? (mediaListView.visible ? mediaListView.bottom: subjectCreation.bottom) : subjectArea.bottom
             anchors.topMargin: page.isPortrait ? Theme.paddingLarge: ( - Theme.paddingLarge)
             anchors.bottom: parent.bottom
             anchors.right: parent.right
@@ -358,6 +411,10 @@ Page {
         id: participantsModel
     }
 
+    ListModel {
+        id: mediaListModel
+    }
+
     Component {
         id: listDelegate
         BackgroundItem {
@@ -383,7 +440,7 @@ Page {
                 anchors.left: contactava.right
                 anchors.leftMargin: Theme.paddingLarge
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.right: remove.left
+                anchors.right: remove.visible ? remove.left : parent.right
                 anchors.rightMargin: Theme.paddingSmall
                 font.pixelSize: Theme.fontSizeMedium
                 text: Utilities.emojify(model.name, emojiPath)
@@ -416,6 +473,58 @@ Page {
 
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("UserProfile.qml"), {"jid": model.jid})
+            }
+        }
+    }
+
+    Component {
+        id: mediaListDelegate
+        MouseArea {
+            id: item
+            width: Theme.itemSizeMedium
+            height: Theme.itemSizeMedium
+
+            Thumbnail {
+                id: image
+                source: model.path
+                height: parent.height
+                width: parent.width
+                sourceSize.height: parent.height
+                sourceSize.width: parent.width
+                anchors.centerIn: parent
+                clip: true
+                smooth: true
+                mimeType: model.mime
+
+                states: [
+                    State {
+                        name: 'loaded'; when: image.status == Thumbnail.Ready
+                        PropertyChanges { target: image; opacity: 1; }
+                    },
+                    State {
+                        name: 'loading'; when: image.status != Thumbnail.Ready
+                        PropertyChanges { target: image; opacity: 0; }
+                    }
+                ]
+
+                Behavior on opacity {
+                    FadeAnimation {}
+                }
+            }
+            Rectangle {
+                anchors.fill: parent
+                color: Theme.rgba(Theme.highlightBackgroundColor, Theme.highlightBackgroundOpacity)
+                visible: pressed && containsMouse
+            }
+            Image {
+                source: "image://theme/icon-m-play"
+                visible: typeof(model.mime) != "undefined" && model.mime.indexOf("video") == 0
+                anchors.centerIn: parent
+                asynchronous: true
+                cache: true
+            }
+            onClicked: {
+                Qt.openUrlExternally(model.path)
             }
         }
     }
