@@ -246,12 +246,40 @@ Dialog {
         iconSource: "image://theme/icon-camera-front-camera"
 
         onClicked: {
+            extensions.viewfinderResolution = "1280x720"
             if (extensions.device == "primary") {
                 extensions.device = "secondary"
             }
             else {
                 extensions.device = "primary"
             }
+        }
+    }
+
+    CircleButton {
+        id: cameraQualityButton
+        property bool hdQuality: true
+
+        anchors.left: parent.left
+        anchors.top: cameraSourceButton.bottom
+        anchors.margins: Theme.paddingSmall
+        visible: !page.canAccept && camera.captureMode == Camera.CaptureVideo
+        rotation: sensor.rotationAngle - 90
+
+        Label {
+            anchors.centerIn: parent
+            text: cameraQualityButton.hdQuality ? "HD" : "VGA"
+        }
+
+        onClicked: {
+            if (hdQuality) {
+                extensions.viewfinderResolution = "640x480"
+            }
+            else {
+                extensions.viewfinderResolution = "1280x720"
+            }
+            hdQuality = !hdQuality
+            reload()
         }
     }
 
