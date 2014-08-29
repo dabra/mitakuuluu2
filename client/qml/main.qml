@@ -226,6 +226,9 @@ ApplicationWindow {
     property bool lockPortrait: false
     onLockPortraitChanged: Mitakuuluu.save("settings/lockPortrait", lockPortrait)
 
+    property bool allowLandscapeInverted: false
+    onAllowLandscapeInvertedChanged: Mitakuuluu.save("settings/allowLandscapeInverted", allowLandscapeInverted)
+
     property string connectionServer: "c3.whatsapp.net"
     onConnectionServerChanged: Mitakuuluu.save("connection/server", connectionServer)
 
@@ -911,6 +914,7 @@ ApplicationWindow {
         importToGallery = Mitakuuluu.load("settings/importmediatogallery", true)
         showConnectionNotifications = Mitakuuluu.load("settings/showConnectionNotifications", false)
         lockPortrait = Mitakuuluu.load("settings/lockPortrait", false)
+        allowLandscapeInverted = Mitakuuluu.load("settings/allowLandscapeInverted", false)
         connectionServer = Mitakuuluu.load("connection/server", "c3.whatsapp.net")
         threading = Mitakuuluu.load("connection/threading", true)
         hideKeyboard = Mitakuuluu.load("settings/hideKeyboard", false)

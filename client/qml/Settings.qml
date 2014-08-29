@@ -234,6 +234,12 @@ Page {
                 onClicked: lockPortrait = checked
             }
 
+            TextSwitch {
+                checked: allowLandscapeInverted
+                text: qsTr("Allow rotating UI to landscape-inverted position")
+                onClicked: allowLandscapeInverted = checked
+            }
+
             ListModel {
                 id: mapSourceModel
                 Component.onCompleted: {
