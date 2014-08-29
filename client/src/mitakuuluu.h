@@ -32,6 +32,9 @@
 
 #define TONE_FALLBACK               "/usr/share/sounds/jolla-ringtones/stereo/jolla-imtone.wav"
 
+typedef QList<QVariantMap> QVariantMapList;
+Q_DECLARE_METATYPE(QVariantMapList)
+
 struct MyStructure {
     QString key, val, type;
 };
@@ -286,6 +289,8 @@ private slots:
 
     void readVersion();
     void readFullVersion();
+
+    void onMediaListReceived(const QString &jid, const QVariantMapList &mediaList);
 
 public slots:
     Q_SCRIPTABLE void exit();

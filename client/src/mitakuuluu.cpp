@@ -76,6 +76,8 @@ Mitakuuluu::Mitakuuluu(QObject *parent): QObject(parent)
         _currentLocale = settings.value("settings/locale", QString("%1.qm").arg(QLocale::system().name().split(".").first())).toString();
         setLocale(_currentLocale);
 
+        qDBusRegisterMetaType<QVariantMapList>();
+
         QDBusConnection::sessionBus().connect(PROFILED_SERVICE, PROFILED_PATH, PROFILED_INTERFACE,
                         "profile_changed", QString("bbsa(sss)"), this,
                         SIGNAL(handleProfileChanged(bool, bool, QString, QList<MyStructure>)));
@@ -187,7 +189,7 @@ Mitakuuluu::Mitakuuluu(QObject *parent): QObject(parent)
         QDBusConnection::sessionBus().connect(SERVER_SERVICE, SERVER_PATH, SERVER_INTERFACE,
                                               "networkUsage", this, SIGNAL(networkUsage(QVariantList)));
         QDBusConnection::sessionBus().connect(SERVER_SERVICE, SERVER_PATH, SERVER_INTERFACE,
-                                              "mediaListReceived", this, SIGNAL(mediaListReceived(QString,QVariantList)));
+                                              "mediaListReceived", this, SLOT(onMediaListReceived(QString,QVariantMapList)));
         qDebug() << "Start pinging server";
         pingServer = new QTimer(this);
         QObject::connect(pingServer, SIGNAL(timeout()), this, SLOT(doPingServer()));
@@ -809,6 +811,15 @@ void Mitakuuluu::readFullVersion()
         _fullVersion = app->readAll();
         Q_EMIT fullVersionChanged();
     }
+}
+
+void Mitakuuluu::onMediaListReceived(const QString &jid, const QVariantMapList &mediaList)
+{
+    QVariantList val;
+    foreach(const QVariantMap &var, mediaList) {
+        val << var;
+    }
+    Q_EMIT mediaListReceived(jid, val);
 }
 
 void Mitakuuluu::exit()

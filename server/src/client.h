@@ -94,6 +94,9 @@
 
 #include "../threadworker/queryexecutor.h"
 
+typedef QList<QVariantMap> QVariantMapList;
+Q_DECLARE_METATYPE(QVariantMapList)
+
 using namespace QtContacts;
 
 /**
@@ -451,7 +454,7 @@ signals:
     void pong();
     void myAccount(const QString &account);
     void simParameters(const QString &mcc, const QString &mnc);
-    void mediaListReceived(const QString &pjid, const QVariantList &mediaList);
+    void mediaListReceived(const QString &pjid, const QVariantMapList &mediaList);
     void streamError();
 
 private:

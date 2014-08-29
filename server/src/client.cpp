@@ -180,6 +180,8 @@ Client::Client(QObject *parent) : QObject(parent)
     QString localeName = settings.value("settings/locale", QLocale::system().name()).toString();
     setLocale(localeName);
 
+    qDBusRegisterMetaType<QVariantMapList>();
+
     bool ret =
         QDBusConnection::sessionBus().registerService(SERVICE_NAME) &&
         QDBusConnection::sessionBus().registerObject(OBJECT_NAME, this,
@@ -3193,9 +3195,9 @@ void Client::dbResults(const QVariant &result)
         break;
     }
     case QueryType::ConversationGetMedia: {
-        QVariantList mediaList = reply["media"].toList();
-        if (mediaList.size() > 0) {
-            Q_EMIT mediaListReceived(reply["jid"].toString(), mediaList);
+        QVariantMapList mapList = reply["media"].value< QVariantMapList >();
+        if (mapList.size() > 0) {
+            Q_EMIT mediaListReceived(reply["jid"].toString(), mapList);
         }
         break;
     }
