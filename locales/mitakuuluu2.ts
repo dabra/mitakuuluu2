@@ -267,6 +267,21 @@
     </message>
 </context>
 <context>
+    <name>Capture</name>
+    <message>
+        <location filename="../client/qml/Capture.qml" line="510"/>
+        <source>Send</source>
+        <comment>Capture page send title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../client/qml/Capture.qml" line="511"/>
+        <source>Camera</source>
+        <comment>Capture page default title</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ChatsPage</name>
     <message>
         <location filename="../client/qml/ChatsPage.qml" line="30"/>
