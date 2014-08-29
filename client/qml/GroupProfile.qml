@@ -316,6 +316,19 @@ Page {
             font.pixelSize: Theme.fontSizeExtraSmall
         }
 
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: page.isPortrait ? parent.right : listView.left
+                top: mediaHeader.top
+                topMargin: Theme.paddingMedium
+                bottom: mediaListView.bottom
+                bottomMargin: - Theme.paddingMedium
+            }
+            visible: mediaListView.count > 0
+            color: (mAreaHeader.pressed && mAreaHeader.containsMouse) ? Theme.rgba(Theme.highlightBackgroundColor, Theme.highlightBackgroundOpacity) : "transparent"
+        }
+
         SectionHeader {
             id: mediaHeader
             text: qsTr("Media")
@@ -325,7 +338,14 @@ Page {
                 topMargin: Theme.paddinSmall
                 left: parent.left
                 right: page.isPortrait ? parent.right : listView.left
-                rightMargin: THeme.paddingLarge
+                rightMargin: Theme.paddingLarge
+            }
+            MouseArea {
+                id: mAreaHeader
+                anchors.fill: parent
+                onClicked: {
+                    pageStack.push(mediaPageComponent)
+                }
             }
         }
 
@@ -481,8 +501,8 @@ Page {
         id: mediaListDelegate
         MouseArea {
             id: item
-            width: Theme.itemSizeMedium
-            height: Theme.itemSizeMedium
+            width: GridView.view ? (GridView.view.cellWidth - 1) : Theme.itemSizeMedium
+            height: GridView.view ? (GridView.view.cellHeight - 1) : Theme.itemSizeMedium
 
             Thumbnail {
                 id: image
@@ -560,6 +580,29 @@ Page {
                 page.avatar = Mitakuuluu.saveAvatarForJid(page.jid, avatarSource)
                 Mitakuuluu.setPicture(page.jid, page.avatar)
                 avatarPicker.destroy()
+            }
+        }
+    }
+
+    Component {
+        id: mediaPageComponent
+        Page {
+            id: mediaPage
+            objectName: "allMediaPage"
+            allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+
+            SilicaGridView {
+                id: mediaGrid
+                anchors.fill: parent
+                header: PageHeader {
+                    title: qsTr("Group media")
+                }
+                cellWidth: mediaPage.isPortrait ? width / 3 : width / 5
+                cellHeight: cellWidth
+                model: mediaListModel
+                delegate: mediaListDelegate
+
+                VerticalScrollDecorator {}
             }
         }
     }
