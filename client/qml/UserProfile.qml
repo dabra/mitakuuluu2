@@ -7,6 +7,7 @@ import "Utilities.js" as Utilities
 Page {
     id: page
     objectName: "profilePage"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property string jid: ""
     onJidChanged: {

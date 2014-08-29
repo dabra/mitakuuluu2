@@ -5,6 +5,8 @@ import harbour.mitakuuluu2.client 1.0
 Dialog {
     id: renameContact
     objectName: "renameContact"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+
     onStatusChanged: {
         if (status == DialogStatus.Opened) {
             nameField.text = ContactsBaseModel.getModel(jid).nickname

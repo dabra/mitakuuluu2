@@ -6,6 +6,7 @@ import harbour.mitakuuluu2.client 1.0
 Dialog {
     id: page
     objectName: "selectPhonebook"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property variant numbers: []
     property variant names: []

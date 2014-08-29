@@ -5,6 +5,7 @@ import harbour.mitakuuluu2.client 1.0
 AvatarPickerCrop {
     id: page
     objectName: "avatarPicker"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property string jid
     signal avatarSet(string avatarPath)

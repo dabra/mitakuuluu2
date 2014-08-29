@@ -5,6 +5,7 @@ import harbour.mitakuuluu2.client 1.0
 Page {
     id: page
     objectName: "paymentsPage"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     SilicaFlickable {
         id: flick

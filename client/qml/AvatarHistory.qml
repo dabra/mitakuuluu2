@@ -7,6 +7,7 @@ import harbour.mitakuuluu2.filemodel 1.0
 Page {
     id: page
     objectName: "avatarHistory"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property string jid
     property string avatar

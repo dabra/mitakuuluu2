@@ -5,6 +5,8 @@ import harbour.mitakuuluu2.client 1.0
 Page {
     id: page
     objectName: "statusFeatures"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+
     property bool loading: false
 
     QtObject {

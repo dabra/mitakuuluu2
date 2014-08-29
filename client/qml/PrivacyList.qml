@@ -6,6 +6,7 @@ import "Utilities.js" as Utilities
 Page {
     id: page
     objectName: "privacyList"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     onStatusChanged: {
         if (status === PageStatus.Inactive) {

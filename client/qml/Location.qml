@@ -7,7 +7,7 @@ import QtPositioning 5.1
 Dialog {
 	id: page
     objectName: "location"
-    allowedOrientations: Orientation.Portrait
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property bool locationEnabled: false
     property bool broadcastMode: true

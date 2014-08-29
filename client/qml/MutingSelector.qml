@@ -5,6 +5,7 @@ import harbour.mitakuuluu2.client 1.0
 Page {
     id: page
     objectName: "mutingSelector"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property string jid
 

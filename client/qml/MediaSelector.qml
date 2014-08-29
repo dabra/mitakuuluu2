@@ -6,6 +6,7 @@ import harbour.mitakuuluu2.filemodel 1.0
 Dialog {
     id: page
     objectName: "mediaSelector"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property FileSourceModel sourceModel
 

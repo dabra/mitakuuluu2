@@ -6,6 +6,7 @@ import "Utilities.js" as Utilities
 Dialog {
     id: page
     objectName: "forwardMessage"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property variant jids: []
 

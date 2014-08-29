@@ -6,6 +6,7 @@ import "Utilities.js" as Utilities
 Page {
 	id: page
 	objectName: "mutedContacts"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     property int timeNow: 0
 

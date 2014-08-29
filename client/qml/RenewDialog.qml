@@ -4,6 +4,8 @@ import harbour.mitakuuluu2.client 1.0
 
 Dialog {
     id: renewDialog
+    objectName: "renewDialog"
+    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     onAccepted: mitakuuluu.renewAccount()
 
