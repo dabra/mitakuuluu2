@@ -210,14 +210,15 @@ Mitakuuluu::Mitakuuluu(QObject *parent): QObject(parent)
             connect(app, SIGNAL(readyRead()), this, SLOT(readVersion()));
         }
 
-        app->start("/bin/rpm", QStringList() << "-qa" << "--queryformat" << "%{version}-%{release}" <<  "harbour-mitakuuluu2");
-        if (app->bytesAvailable() > 0) {
-            _fullVersion = app->readAll();
+        QProcess *app2 = new QProcess(this);
+        app2->start("/bin/rpm", QStringList() << "-qa" << "--queryformat" << "%{version}-%{release}" <<  "harbour-mitakuuluu2");
+        if (app2->bytesAvailable() > 0) {
+            _fullVersion = app2->readAll();
             Q_EMIT fullVersionChanged();
         }
         else {
             _fullVersion = "n/a";
-            connect(app, SIGNAL(readyRead()), this, SLOT(readFullVersion()));
+            connect(app2, SIGNAL(readyRead()), this, SLOT(readFullVersion()));
         }
 
         connect(nam->get(QNetworkRequest(QUrl("https://coderus.openrepos.net/mitakuuluu.json"))),

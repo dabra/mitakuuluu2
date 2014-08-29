@@ -881,6 +881,14 @@ ApplicationWindow {
                 banner.notify(qsTr("Server experiencing problems with following feature(s): %1").arg(offlineFeatures.join(", ")))
             }
         }
+        onWebVersionChanged: {
+            console.log("checking verion " + Mitakuuluu.fullVersion + " and " + Mitakuuluu.webVersion.version)
+            if (Mitakuuluu.webVersion.version && version_compare(Mitakuuluu.fullVersion, Mitakuuluu.webVersion.version, "<")) {
+                var updateDialogComponent = Qt.createComponent(Qt.resolvedUrl("NewVersion.qml"));
+                var updateDialog = updateDialogComponent.createObject(appWindow)
+                updateDialog.open()
+            }
+        }
     }
 
     Component.onCompleted: {
@@ -933,12 +941,6 @@ ApplicationWindow {
         hidden = true
 
         updateCoverActions()
-
-        if (Mitakuuluu.webVersion.version && version_compare(Mitakuuluu.fullVersion, Mitakuuluu.webVersion.version, "<")) {
-            var updateDialogComponent = Qt.createComponent(Qt.resolvedUrl("NewVersion.qml"));
-            var updateDialog = updateDialogComponent.createObject(appWindow)
-            updateDialog.open()
-        }
     }
 
     Popup {
