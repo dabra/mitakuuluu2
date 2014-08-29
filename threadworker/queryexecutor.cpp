@@ -882,8 +882,7 @@ void QueryExecutor::mediaUploaded(QVariantMap &query)
 void QueryExecutor::getContactMedia(QVariantMap &query)
 {
     QSqlQuery sql(db);
-    sql.prepare(QString("SELECT local, mime FROM u%1 WHERE (watype=1 OR watype=3) AND author=(:author) ORDER BY timestamp DESC;").arg(query["table"].toString()));
-    sql.bindValue(":author", query["jid"].toString());
+    sql.prepare(QString("SELECT local, mime FROM u%1 WHERE (watype=1 OR watype=3) ORDER BY timestamp DESC;").arg(query["table"].toString()));
     sql.exec();
     QVariantList mediaList;
     while (sql.next()) {
