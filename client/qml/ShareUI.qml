@@ -20,14 +20,8 @@ ShareDialog {
 
     canAccept: false
 
-    onStatusChanged: {
-        if (status == DialogStatus.Opened) {
-            //fastScroll.init()
-        }
-    }
-
     onAccepted: {
-        if (content && 'data' in content) {
+        if (source == '' && content && 'data' in content) {
             contactsModel.startSharing(jids, content.name, content.data)
         }
         else {
@@ -50,7 +44,7 @@ ShareDialog {
 
     SilicaFlickable {
         anchors.fill: parent
-        contentHeight: Math.max(1, content.height)
+        contentHeight: Math.max(1, column.height)
 
         PullDownMenu {
             MenuItem {
@@ -65,7 +59,7 @@ ShareDialog {
         }
 
         Column {
-            id: content
+            id: column
             width: parent.width
 
             DialogHeader {
@@ -90,6 +84,7 @@ ShareDialog {
                 parent: searchFieldPlaceholder
                 width: parent.width
                 enabled: root.searchEnabled
+                focus: enabled
                 onEnabledChanged: {
                     if (!enabled) {
                         text = ''
