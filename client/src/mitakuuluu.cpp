@@ -221,8 +221,7 @@ Mitakuuluu::Mitakuuluu(QObject *parent): QObject(parent)
             connect(app2, SIGNAL(readyRead()), this, SLOT(readFullVersion()));
         }
 
-        connect(nam->get(QNetworkRequest(QUrl("https://coderus.openrepos.net/mitakuuluu.json"))),
-                SIGNAL(finished()), this, SLOT(onVersionReceived()));
+        checkWebVersion();
     }
     else {
         QGuiApplication::exit(1);
@@ -1429,6 +1428,12 @@ bool Mitakuuluu::compressLogs()
         return zip.exitStatus() == QProcess::NormalExit;
     }
     return false;
+}
+
+void Mitakuuluu::checkWebVersion()
+{
+    connect(nam->get(QNetworkRequest(QUrl("https://coderus.openrepos.net/mitakuuluu.json"))),
+            SIGNAL(finished()), this, SLOT(onVersionReceived()));
 }
 
 // Settings

@@ -12,6 +12,13 @@ Page {
         boundsBehavior: Flickable.DragAndOvershootBounds
         contentHeight: content.height
 
+        PullDownMenu {
+            MenuItem {
+                text: qsTr("Check for updates")
+                onClicked: Mitakuuluu.checkWebVersion()
+            }
+        }
+
         Image {
             source: "/usr/share/harbour-mitakuuluu2/images/hearts-black.png"
             anchors {

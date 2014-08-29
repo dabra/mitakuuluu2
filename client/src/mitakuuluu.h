@@ -379,6 +379,7 @@ public slots:
     void saveHistory(const QString &sjid, const QString &sname);
     void requestContactMedia(const QString &sjid);
     bool compressLogs();
+    void checkWebVersion();
 
 //Settings
 
