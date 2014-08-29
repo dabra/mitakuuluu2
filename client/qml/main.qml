@@ -280,6 +280,8 @@ ApplicationWindow {
     property int reconnectionLimit: 20
     onReconnectionLimitChanged: Mitakuuluu.save("settings/reconnectionLimit", reconnectionLimit)
 
+    property bool updateAvailable: false
+
     property int currentOrientation: pageStack._currentOrientation
 
     property string coverIconLeft: "../images/icon-cover-location-left.png"
@@ -887,6 +889,7 @@ ApplicationWindow {
         onWebVersionChanged: {
             console.log("checking verion " + Mitakuuluu.fullVersion + " and " + Mitakuuluu.webVersion.version)
             if (Mitakuuluu.webVersion.version && version_compare(Mitakuuluu.fullVersion, Mitakuuluu.webVersion.version, "<")) {
+                updateAvailable = true
                 var updateDialogComponent = Qt.createComponent(Qt.resolvedUrl("NewVersion.qml"));
                 var updateDialog = updateDialogComponent.createObject(appWindow)
                 updateDialog.open()

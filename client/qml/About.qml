@@ -18,6 +18,10 @@ Page {
                 text: qsTr("Check for updates")
                 onClicked: Mitakuuluu.checkWebVersion()
             }
+            MenuLabel {
+                text: qsTr("Update available")
+                visible: updateAvailable
+            }
         }
 
         Image {
