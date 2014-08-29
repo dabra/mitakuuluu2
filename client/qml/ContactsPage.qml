@@ -23,8 +23,8 @@ Page {
                 horizontalHint.start()
                 Mitakuuluu.save("settings/firstStartContacts", false)
             }
-            horizontalHint.visible = firstStartChats
-            hintLabel.visible = firstStartChats
+            horizontalHint.visible = firstStartContacts
+            hintLabel.visible = firstStartContacts
         }
     }
 
