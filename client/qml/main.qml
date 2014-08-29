@@ -888,7 +888,8 @@ ApplicationWindow {
         }
         onWebVersionChanged: {
             console.log("checking verion " + Mitakuuluu.fullVersion + " and " + Mitakuuluu.webVersion.version)
-            if (Mitakuuluu.webVersion.version && version_compare(Mitakuuluu.fullVersion, Mitakuuluu.webVersion.version, "<")) {
+            updateAvailable = false
+            if (Mitakuuluu.webVersion.version && Mitakuuluu.fullVersion !== "n/a" && version_compare(Mitakuuluu.fullVersion, Mitakuuluu.webVersion.version, "<")) {
                 updateAvailable = true
                 var updateDialogComponent = Qt.createComponent(Qt.resolvedUrl("NewVersion.qml"));
                 var updateDialog = updateDialogComponent.createObject(appWindow)
