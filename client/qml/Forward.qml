@@ -199,7 +199,9 @@ Dialog {
                 id: contactava
                 height: Theme.iconSizeLarge
                 width: Theme.iconSizeLarge
-                source: model.avatar
+                source: usePhonebookAvatars || (model.jid.indexOf("-") > 0)
+                        ? (model.avatar == "undefined" ? "" : (model.avatar))
+                        : (model.owner == "undefined" ? "" : (model.owner))
                 emptySource: "../images/avatar-empty" + (model.jid.indexOf("-") > 0 ? "-group" : "") + ".png"
                 anchors.left: parent.left
                 anchors.leftMargin: Theme.paddingLarge

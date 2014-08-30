@@ -15,7 +15,9 @@ Page {
         var model = ContactsBaseModel.getModel(jid)
         pushname = model.nickname || model.name
         presence = model.message
-        picture = model.avatar
+        picture = usePhonebookAvatars || (model.jid.indexOf("-") > 0)
+                ? (model.avatar == "undefined" ? "" : (model.avatar))
+                : (model.owner == "undefined" ? "" : (model.owner))
         blocked = model.blocked
     }
     property string pushname: ""
@@ -38,7 +40,7 @@ Page {
     Connections {
         target: Mitakuuluu
         onPictureUpdated: {
-            if (pjid == page.jid) {
+            if (pjid == page.jid && !usePhonebookAvatars) {
                 picture = ""
                 picture = path
             }

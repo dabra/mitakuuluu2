@@ -280,6 +280,9 @@ ApplicationWindow {
     property int reconnectionLimit: 20
     onReconnectionLimitChanged: Mitakuuluu.save("settings/reconnectionLimit", reconnectionLimit)
 
+    property bool usePhonebookAvatars: true
+    onUsePhonebookAvatarsChanged: Mitakuuluu.save("settings/usePhonebookAvatars", usePhonebookAvatars)
+
     property bool updateAvailable: false
 
     property int currentOrientation: pageStack._currentOrientation
@@ -937,6 +940,7 @@ ApplicationWindow {
         useKeepalive = Mitakuuluu.load("settings/useKeepalive", true)
         reconnectionInterval = Mitakuuluu.load("settings/reconnectionInterval", 1)
         reconnectionLimit = Mitakuuluu.load("settings/reconnectionLimit", 20)
+        usePhonebookAvatars = Mitakuuluu.load("settings/usePhonebookAvatars", true)
 
         var hiddenContacts = Mitakuuluu.loadGroup("hidden")
         var toHide = []

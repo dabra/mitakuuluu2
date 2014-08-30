@@ -37,9 +37,12 @@ Page {
                 var jid = list[i]
                 var model = ContactsBaseModel.getModel(jid)
                 if (model.jid) {
+                    var avatar = usePhonebookAvatars || (model.jid.indexOf("-") > 0)
+                            ? (model.avatar == "undefined" ? "" : (model.avatar))
+                            : (model.owner == "undefined" ? "" : (model.owner))
                     listModel.append({"jid": model.jid,
                                       "name": getNicknameByJid(model.jid),
-                                      "avatar": model.avatar})
+                                      "avatar": avatar})
                 }
                 else {
                     listModel.append({"jid": jid,

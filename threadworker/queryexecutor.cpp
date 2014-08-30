@@ -277,7 +277,7 @@ void QueryExecutor::messageNotify(QVariantMap &query)
 {
     QString jid = query["jid"].toString();
     QSqlQuery sql(db);
-    sql.prepare("SELECT name, message, avatar, unread, pushname from contacts where jid=(:jid);");
+    sql.prepare("SELECT name, message, avatar, unread, pushname, owner from contacts where jid=(:jid);");
     sql.bindValue(":jid", jid);
     sql.exec();
     if (sql.next()) {
@@ -287,7 +287,12 @@ void QueryExecutor::messageNotify(QVariantMap &query)
         int unread = sql.value(3).toInt();
         QString pushname = sql.value(4).toString();
         query["unread"] = unread;
-        query["avatar"] = sql.value(2);
+        if (jid.contains("-")) {
+            query["avatar"] = sql.value(2);
+        }
+        else {
+            query["avatar"] = sql.value(5);
+        }
         QString nickname = pushName;
         if (jid.contains("-"))
             nickname = message;
@@ -450,15 +455,8 @@ void QueryExecutor::setContactsResults(QVariantMap &query)
             qDebug() << "Name:" << name << "Phone:" << phone << "Jid:" << jid;
 
             QSqlQuery uc;
-            //uc.prepare("UPDATE contacts SET name=(:name), message=(:message), timestamp=(:timestamp) WHERE jid=(:jid);");
-            if (avatar.isEmpty() || avatar.contains("harbour-mitakuuluu2") || avatar.contains("image://")) {
-                uc.prepare("UPDATE contacts SET name=(:name), contacttype=(:contacttype) WHERE jid=(:jid);");
-                avatars.append(jid);
-            }
-            else {
-                uc.prepare("UPDATE contacts SET name=(:name), contacttype=(:contacttype), avatar=(:avatar) WHERE jid=(:jid);");
-                uc.bindValue(":avatar", avatar);
-            }
+            uc.prepare("UPDATE contacts SET name=(:name), contacttype=(:contacttype), avatar=(:avatar) WHERE jid=(:jid);");
+            uc.bindValue(":avatar", avatar);
             uc.bindValue(":name", name);
             uc.bindValue(":contacttype", 1);
             //uc.bindValue(":timestamp", timestamp);
@@ -552,22 +550,12 @@ void QueryExecutor::setContactSync(QVariantMap &query)
 
 void QueryExecutor::setContactAvatar(QVariantMap &query)
 {
-    QSqlQuery ava(db);
-    ava.prepare("SELECT avatar FROM contacts WHERE jid=(:jid);");
-    ava.bindValue(":jid", query["jid"]);
-    ava.exec();
-
-    if (ava.next()) {
-        QString avatar = ava.value(0).toString();
-        if (avatar.isEmpty() || avatar.contains("harbour-mitakuuluu2") || avatar.contains("image://")) {
-            QSqlQuery sql(db);
-            sql.prepare("UPDATE contacts SET avatar=(:avatar) WHERE jid=(:jid);");
-            sql.bindValue(":avatar", query["avatar"]);
-            sql.bindValue(":jid", query["jid"]);
-            sql.exec();
-        }
-    }
-
+    QString jid = query["jid"].toString();
+    QSqlQuery sql(db);
+    sql.prepare(QString("UPDATE contacts SET %1=(:avatar) WHERE jid=(:jid);").arg(jid.contains("-") ? "avatar" : "owner"));
+    sql.bindValue(":avatar", query["avatar"]);
+    sql.bindValue(":jid", jid);
+    sql.exec();
     Q_EMIT actionDone(query);
 }
 

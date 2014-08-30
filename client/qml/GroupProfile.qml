@@ -82,7 +82,8 @@ Page {
                     var model = ContactsBaseModel.getModel(pjids[i])
                     participantsModel.append({"jid": model.jid,
                                               "name": getNicknameByJid(model.jid),
-                                              "avatar": model.avatar})
+                                              "avatar": model.avatar,
+                                              "owner": model.owner})
                 }
             }
         }
@@ -448,7 +449,9 @@ Page {
                 id: contactava
                 height: Theme.iconSizeLarge
                 width: Theme.iconSizeLarge
-                source: model.avatar
+                source: usePhonebookAvatars || (model.jid.indexOf("-") > 0)
+                        ? (model.avatar == "undefined" ? "" : (model.avatar))
+                        : (model.owner == "undefined" ? "" : (model.owner))
                 emptySource: "../images/avatar-empty.png"
                 anchors.left: parent.left
                 anchors.leftMargin: Theme.paddingLarge

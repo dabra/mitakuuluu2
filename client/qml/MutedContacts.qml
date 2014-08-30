@@ -71,10 +71,13 @@ Page {
         id: delegateComponent
         BackgroundItem {
             id: item
+            property variant contactModel: ContactsBaseModel.getModel(model.jid)
 
             AvatarHolder {
                 id: ava
-                source: ContactsBaseModel.getModel(model.jid).avatar
+                source: usePhonebookAvatars || (model.jid.indexOf("-") > 0)
+                        ? (contactModel.avatar == "undefined" ? "" : (contactModel.avatar))
+                        : (contactModel.owner == "undefined" ? "" : (contactModel.owner))
                 emptySource: "../images/avatar-empty" + (model.jid.indexOf("-") > 0 ? "-group" : "") + ".png"
                 anchors {
                 	left: parent.left

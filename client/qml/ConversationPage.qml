@@ -64,7 +64,9 @@ Page {
             //console.log("muted: " + initialModel.muted)
             //muted = initialModel.muted
             //console.log("avatar: " + initialModel.avatar)
-            avatar = initialModel.avatar
+            avatar = usePhonebookAvatars || (jid.indexOf("-") > 0)
+                    ? (initialModel.avatar == "undefined" ? "" : (initialModel.avatar))
+                    : (initialModel.owner == "undefined" ? "" : (initialModel.owner))
             typing = initialModel.typing
             lastseconds = parseInt(initialModel.timestamp)
 

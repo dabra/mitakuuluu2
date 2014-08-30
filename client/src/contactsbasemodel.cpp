@@ -214,10 +214,7 @@ QString ContactsBaseModel::getNicknameBy(const QString &jid, const QString &mess
 void ContactsBaseModel::pictureUpdated(const QString &jid, const QString &path)
 {
     if (_modelData.contains(jid)) {
-        QString avatar = _modelData[jid]["avatar"].toString();
-        if (avatar.isEmpty() || avatar.contains("harbour-mitakuuluu2") || avatar.contains("image://")) {
-            setPropertyByJid(jid, "avatar", path);
-        }
+        setPropertyByJid(jid, jid.contains("-") ? "avatar" : "owner", path);
     }
 }
 

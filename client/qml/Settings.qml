@@ -601,6 +601,12 @@ Page {
                 onClicked: acceptUnknown = checked
             }
 
+            TextSwitch {
+                checked: usePhonebookAvatars
+                text: qsTr("Show phonebok avatars", "Settings option name")
+                onClicked: usePhonebookAvatars = checked
+            }
+
             SectionHeader {
                 text: qsTr("Presence", "Settings page section name")
             }
