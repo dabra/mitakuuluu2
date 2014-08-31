@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import QtFeedback 5.0
 import harbour.mitakuuluu2.client 1.0
 import Sailfish.Gallery.private 1.0
+import org.nemomobile.configuration 1.0
 import QtSensors 5.1
 
 ApplicationWindow {
@@ -153,6 +154,36 @@ ApplicationWindow {
           }
         }
 
+    function timestampToDateTime(stamp) {
+        var d = new Date(stamp*1000)
+        if (timeFormat24) {
+            return Qt.formatDateTime(d, "dd.MM hh:mm:ss")
+        }
+        else {
+            return Qt.formatDateTime(d, "dd.MM h:mm:ss ap")
+        }
+    }
+
+    function timestampToTime(stamp) {
+        var d = new Date(stamp*1000)
+        if (showSeconds) {
+            if (timeFormat24) {
+                return Qt.formatDateTime(d, "hh:mm:ss")
+            }
+            else {
+                return Qt.formatDateTime(d, "h:mm:ss ap")
+            }
+        }
+        else {
+            if (timeFormat24) {
+                return Qt.formatDateTime(d, "hh:mm")
+            }
+            else {
+                return Qt.formatDateTime(d, "h:mm ap")
+            }
+        }
+    }
+
     property bool sendByEnter: false
     onSendByEnterChanged: Mitakuuluu.save("settings/sendByEnter", sendByEnter)
 
@@ -290,6 +321,12 @@ ApplicationWindow {
     property string coverIconLeft: "../images/icon-cover-location-left.png"
     property string coverIconRight: "../images/icon-cover-camera-right.png"
     property bool coverActionActive: false
+
+    property bool timeFormat24: timeFormat.value === "24"
+    ConfigurationValue {
+        id: timeFormat
+        key: "/sailfish/i18n/lc_timeformat24h"
+    }
 
     function coverLeftClicked() {
         coverAction(coverLeftAction)
