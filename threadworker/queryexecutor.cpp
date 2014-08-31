@@ -98,10 +98,7 @@ void QueryExecutor::processQuery(const QVariant &msg)
             setContactsResults(query);
             break;
         }
-        case QueryType::ContactsSetStatus: {
-            setContactStatus(query);
-            break;
-        }
+        case QueryType::ContactsSetStatus:
         case QueryType::ContactsSetSync: {
             setContactSync(query);
             break;
@@ -525,21 +522,10 @@ void QueryExecutor::setContactsResults(QVariantMap &query)
     Q_EMIT actionDone(query);
 }
 
-void QueryExecutor::setContactStatus(QVariantMap &query)
-{
-    QSqlQuery sql(db);
-    sql.prepare("UPDATE contacts SET message=(:message), WHERE jid=(:jid);");
-    sql.bindValue(":message", query["message"]);
-    sql.bindValue(":jid", query["jid"]);
-    sql.exec();
-
-    Q_EMIT actionDone(query);
-}
-
 void QueryExecutor::setContactSync(QVariantMap &query)
 {
     QSqlQuery sql(db);
-    sql.prepare("UPDATE contacts SET message=(:message), timestamp=(:timestamp) WHERE jid=(:jid);");
+    sql.prepare("UPDATE contacts SET message=(:message), subtimestamp=(:timestamp) WHERE jid=(:jid);");
     sql.bindValue(":message", query["message"]);
     sql.bindValue(":timestamp", query["timestamp"]);
     sql.bindValue(":jid", query["jid"]);

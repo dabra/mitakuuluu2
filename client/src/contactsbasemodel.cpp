@@ -62,7 +62,7 @@ ContactsBaseModel::ContactsBaseModel(QObject *parent) :
     QDBusConnection::sessionBus().connect(SERVER_SERVICE, SERVER_PATH, SERVER_INTERFACE,
                                           "messageReceived", this, SLOT(messageReceived(QVariantMap)));
     QDBusConnection::sessionBus().connect(SERVER_SERVICE, SERVER_PATH, SERVER_INTERFACE,
-                                          "contactStatus", this, SLOT(contactStatus(QString, QString)));
+                                          "contactStatus", this, SLOT(contactStatus(QString, QString, int)));
     QDBusConnection::sessionBus().connect(SERVER_SERVICE, SERVER_PATH, SERVER_INTERFACE,
                                           "contactsBlocked", this, SLOT(contactsBlocked(QStringList)));
     QDBusConnection::sessionBus().connect(SERVER_SERVICE, SERVER_PATH, SERVER_INTERFACE,
@@ -324,13 +324,15 @@ void ContactsBaseModel::contactSynced(const QVariantMap &data)
     }
 }
 
-void ContactsBaseModel::contactStatus(const QString &jid, const QString &message)
+void ContactsBaseModel::contactStatus(const QString &jid, const QString &message, int timestamp)
 {
     if (_modelData.contains(jid)) {
-        if (_modelData[jid]["message"].toString() == message)
+        if (_modelData[jid]["subtimestamp"].toInt() == timestamp)
             return;
+        Q_EMIT statusChanged(jid, message, timestamp);
         qDebug() << "contact status for" << jid << message;
         _modelData[jid]["message"] = message;
+        _modelData[jid]["subtimestamp"] = timestamp;
         int row = _modelData.keys().indexOf(jid);
         dataChanged(index(row), index(row));
     }

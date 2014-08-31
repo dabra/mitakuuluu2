@@ -724,8 +724,8 @@ void Client::onAuthSuccess(const QString &creation, const QString &expiration, c
     connect(connectionPtr.data(),SIGNAL(groupLeft(QString)),
             this,SLOT(groupLeft(QString)));
 
-    connect(connectionPtr.data(),SIGNAL(userStatusUpdated(QString, QString)),
-            this,SLOT(userStatusUpdated(QString, QString)));
+    connect(connectionPtr.data(),SIGNAL(userStatusUpdated(QString, QString, int)),
+            this,SLOT(userStatusUpdated(QString, QString, int)));
 
     connect(connectionPtr.data(),SIGNAL(lastOnline(QString,qint64)),
             this,SLOT(available(QString,qint64)));
@@ -1147,7 +1147,7 @@ void Client::syncContactsAvailable(const QVariantList &results)
                 QSettings settings("coderus", "mitakuuluu2", this);
                 settings.setValue(SETTINGS_STATUS,myStatus);
             }
-            Q_EMIT contactStatus(jid, message);
+            Q_EMIT contactStatus(jid, message, contact["timestamp"].toInt());
 
             contact["type"] = QueryType::ContactsSetSync;
             contact["uuid"] = uuid;
@@ -2040,14 +2040,24 @@ void Client::getPicture(const QString &jid)
     }
 }
 
-void Client::userStatusUpdated(const QString &jid, const QString &message)
+void Client::userStatusUpdated(const QString &jid, const QString &message, int timestamp)
 {
     qDebug() << "status updated for:" << jid << "status:" << message;
     if (!jid.contains("-")) {
-        QVariantMap query;
-        query["uuid"] = uuid;
+        Q_EMIT contactStatus(jid, message, timestamp);
 
-        Q_EMIT contactStatus(jid, message);
+        QVariantMap contact;
+        contact["jid"] = jid;
+        contact["timestamp"] = timestamp;
+        contact["message"] = message;
+        contact["type"] = QueryType::ContactsSetSync;
+        contact["uuid"] = uuid;
+        dbExecutor->queueAction(contact);
+    }
+    if (jid == myJid) {
+        myStatus = message;
+        QSettings settings("coderus", "mitakuuluu2", this);
+        settings.setValue(SETTINGS_STATUS,myStatus);
     }
 }
 

@@ -509,7 +509,7 @@ signals:
     void lastOnline(const QString &jid, qint64 timestamp);
 
     // User status update
-    void userStatusUpdated(const QString &jid, const QString &message);
+    void userStatusUpdated(const QString &jid, const QString &message, int timestamp);
 
 
     /** ***********************************************************************

@@ -74,6 +74,7 @@ private:
 
 signals:
     void nicknameChanged(const QString &pjid, const QString &nickname);
+    void statusChanged(const QString &pjid, const QString &message, int ptimestamp);
     void totalUnreadChanged();
     void deleteEverythingSuccessful();
 
@@ -82,7 +83,7 @@ private slots:
     void groupInfo(const QVariantMap &data);
     void contactChanged(const QVariantMap &data);
     void contactSynced(const QVariantMap &data);
-    void contactStatus(const QString &jid, const QString &message);
+    void contactStatus(const QString &jid, const QString &message, int timestamp);
     void newGroupSubject(const QVariantMap &data);
     void setUnread(const QString &jid, int count);
     void pushnameUpdated(const QString &jid, const QString &pushName);

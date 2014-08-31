@@ -425,7 +425,7 @@ bool Connection::read()
                                 QString t = list.getAttributeValue("t");
                                 QVariantMap contact;
                                 contact["jid"] = jid;
-                                contact["lastseen"] = t;
+                                contact["timestamp"] = t;
                                 QString message = list.getDataString();
                                 if (message.isEmpty()) {
                                     QString code = list.getAttributeValue("code");
@@ -658,6 +658,7 @@ bool Connection::read()
 
             else if (notificationType == "status") {
                 sendNotificationReceived(from, id, to, participant, notificationType, ProtocolTreeNode());
+                QString timestamp = node.getAttributeValue("t");
                 ProtocolTreeNodeListIterator i(node.getChildren());
                 while (i.hasNext())
                 {
@@ -665,7 +666,7 @@ bool Connection::read()
                     if (child.getTag() == "set")
                     {
                         QString message = child.getDataString();
-                        Q_EMIT userStatusUpdated(from, message);
+                        Q_EMIT userStatusUpdated(from, message, timestamp.toInt());
                     }
                 }
             }

@@ -295,7 +295,7 @@ private slots:
     void connectionDeactivated();
     void queueMessage(const FMessage &message);
     void sendMessagesInQueue();
-    void userStatusUpdated(const QString &jid, const QString &message);
+    void userStatusUpdated(const QString &jid, const QString &message, int timestamp);
     void syncResultsAvailable(const QVariantList &results);
     void syncContactsAvailable(const QVariantList &results);
     void photoRefresh(const QString &jid, const QString &expectedPhotoId, bool largeFormat);
@@ -403,7 +403,7 @@ signals:
     void contactsMuted(const QVariantMap &jids);
     void contactsAvailable(const QStringList &jids);
     void avatarChanged(const QString &jid, const QString &avatar);
-    void contactStatus(const QString &jid, const QString &message);
+    void contactStatus(const QString &jid, const QString &message, int timestamp);
     void synchronizationFinished();
     void synchronizationFailed();
     void codeRequested(const QVariantMap &method);

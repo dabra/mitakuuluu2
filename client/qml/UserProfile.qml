@@ -15,6 +15,7 @@ Page {
         var model = ContactsBaseModel.getModel(jid)
         pushname = model.nickname || model.name
         presence = model.message
+        timestamp = model.subtimestamp
         picture = usePhonebookAvatars || (model.jid.indexOf("-") > 0)
                 ? (model.avatar == "undefined" ? "" : (model.avatar))
                 : (model.owner == "undefined" ? "" : (model.owner))
@@ -22,6 +23,7 @@ Page {
     }
     property string pushname: ""
     property string presence: ""
+    property int timestamp: 0
     property string phone: ""
     property string picture: ""
     property bool blocked: false
@@ -33,6 +35,12 @@ Page {
         onNicknameChanged: {
             if (pjid == page.jid) {
                 pushname = nickname
+            }
+        }
+        onStatusChanged: {
+            if (pjid == page.jid) {
+                presence = message
+                timestamp = ptimestamp
             }
         }
     }
@@ -157,6 +165,17 @@ Page {
                 }
                 text: qsTr("Status: %1", "User profile page status label").arg(Utilities.emojify(presence, emojiPath))
                 textFormat: Text.RichText
+                wrapMode: Text.WordWrap
+            }
+
+            Label {
+                id: presenceTimestamp
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingLarge
+                }
+                text: qsTr("Status set: %1", "User profile page status timestamp").arg(timestampToDateTime(timestamp))
                 wrapMode: Text.WordWrap
             }
 

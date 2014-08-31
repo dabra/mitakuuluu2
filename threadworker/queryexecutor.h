@@ -82,7 +82,6 @@ private:
     void setContactPushname(QVariantMap &query);
     void setContactUnread(QVariantMap query);
     void setContactsResults(QVariantMap &query);
-    void setContactStatus(QVariantMap &query);
     void setContactSync(QVariantMap &query);
     void setContactAvatar(QVariantMap &query);
     void getContactsShareui(QVariantMap &query);
