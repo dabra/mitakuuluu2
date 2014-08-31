@@ -6,7 +6,7 @@ Name:       harbour-mitakuuluu2
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 
 Summary:    Mitäkuuluu
-Version:    0.8.4
+Version:    0.8.5
 Release:    1
 Group:      Qt/Qt
 License:    WTFPL
@@ -33,7 +33,7 @@ BuildRequires:  libkeepalive-devel
 BuildRequires:  qt5-qttools-linguist
 
 %description
-Short description of my SailfishOS Application
+Mitakuuluu - indie WhatsApp-compatible client for SailfishOS
 
 %prep
 %setup -q -n %{name}-%{version}
