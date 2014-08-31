@@ -57,6 +57,12 @@ Dialog {
         }
     }
 
+    function tr_noop() {
+        qsTr("free", "Account type")
+        qsTr("paid", "Account type")
+        qsTr("blocked", "Account type")
+    }
+
     Connections {
         target: Mitakuuluu
 
@@ -256,7 +262,7 @@ Dialog {
 
         Label {
             id: labelType
-            text: qsTr("Account type: %1", "Account page account type label").arg(page.kind)
+            text: qsTr("Account type: %1", "Account page account type label").arg(qsTr(page.kind))
             anchors.top: labelActive.bottom
             anchors.topMargin: Theme.paddingSmall
             anchors.left: ava.right
