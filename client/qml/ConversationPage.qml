@@ -8,7 +8,7 @@ import "Utilities.js" as Utilities
 Page {
     id: page
     objectName: "conversationPage"
-    allowedOrientations: lockPortrait ? Orientation.Portrait : (Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape))
+    allowedOrientations: conversationOrientation
 
     property PositionSource positionSource
     property AudioRecorder audioRecorder
@@ -99,49 +99,6 @@ Page {
 
     function saveText() {
         Mitakuuluu.save("typing/" + jid, sendBox.text.trim())
-    }
-
-    function getNicknameByJid(jid) {
-        if (jid == Mitakuuluu.myJid)
-            return qsTr("You", "Display You instead of your own nickname")
-        var model = ContactsBaseModel.getModel(jid)
-        if (model && model.nickname)
-            return model.nickname
-        else
-            return jid.split("@")[0]
-    }
-
-    function getContactColor(jid) {
-        if (isGroup) {
-            if (jid == Mitakuuluu.myJid) {
-                return Theme.highlightColor
-            }
-            else {
-                return ContactsBaseModel.getColorForJid(jid)
-            }
-        }
-        else {
-            if (jid == Mitakuuluu.myJid) {
-                return Theme.highlightColor
-            }
-            else {
-                return "#FFFFFF"
-            }
-        }
-    }
-
-    function msgStatusColor(model) {
-        if (model.author != Mitakuuluu.myJid) {
-            return "transparent"
-        }
-        else {
-            if  (model.msgstatus == 4)
-                return "#60ffff00"
-            else if  (model.msgstatus == 5)
-                return "#6000ff00"
-            else
-                return "#60ff0000"
-        }
     }
 
     function getMediaPreview(model) {

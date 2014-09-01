@@ -13,6 +13,9 @@ ApplicationWindow {
     initialPage: (Mitakuuluu.load("account/phoneNumber", "unregistered") === "unregistered") ?
                      Qt.resolvedUrl("RegistrationPage.qml") : Qt.resolvedUrl("ChatsPage.qml")
 
+    property int globalOrientation: lockPortraitPages ? Orientation.Portrait : (Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape))
+    property int conversationOrientation: lockPortrait ? Orientation.Portrait : (Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape))
+
     property bool hidden: true
     onHiddenChanged: {
         console.log("hide contacts: " + hidden)
@@ -180,6 +183,49 @@ ApplicationWindow {
         }
     }
 
+    function getNicknameByJid(jid) {
+        if (jid == Mitakuuluu.myJid)
+            return qsTr("You", "Display You instead of your own nickname")
+        var model = ContactsBaseModel.getModel(jid)
+        if (model && model.nickname)
+            return model.nickname
+        else
+            return jid.split("@")[0]
+    }
+
+    function getContactColor(jid) {
+        if (jid.indexOf("-") > 0) {
+            if (jid == Mitakuuluu.myJid) {
+                return Theme.highlightColor
+            }
+            else {
+                return ContactsBaseModel.getColorForJid(jid)
+            }
+        }
+        else {
+            if (jid == Mitakuuluu.myJid) {
+                return Theme.highlightColor
+            }
+            else {
+                return "#FFFFFF"
+            }
+        }
+    }
+
+    function msgStatusColor(model) {
+        if (model.author != Mitakuuluu.myJid) {
+            return "transparent"
+        }
+        else {
+            if  (model.msgstatus == 4)
+                return "#60ffff00"
+            else if  (model.msgstatus == 5)
+                return "#6000ff00"
+            else
+                return "#60ff0000"
+        }
+    }
+
     property bool sendByEnter: false
     onSendByEnterChanged: Mitakuuluu.save("settings/sendByEnter", sendByEnter)
 
@@ -252,6 +298,9 @@ ApplicationWindow {
 
     property bool lockPortrait: false
     onLockPortraitChanged: Mitakuuluu.save("settings/lockPortrait", lockPortrait)
+
+    property bool lockPortraitPages: false
+    onLockPortraitPagesChanged: Mitakuuluu.save("settings/lockPortraitPages", lockPortraitPages)
 
     property bool allowLandscapeInverted: false
     onAllowLandscapeInvertedChanged: Mitakuuluu.save("settings/allowLandscapeInverted", allowLandscapeInverted)
@@ -954,6 +1003,7 @@ ApplicationWindow {
         importToGallery = Mitakuuluu.load("settings/importmediatogallery", true)
         showConnectionNotifications = Mitakuuluu.load("settings/showConnectionNotifications", false)
         lockPortrait = Mitakuuluu.load("settings/lockPortrait", false)
+        lockPortraitPages = Mitakuuluu.load("settings/lockPortraitPages", false)
         allowLandscapeInverted = Mitakuuluu.load("settings/allowLandscapeInverted", false)
         connectionServer = Mitakuuluu.load("connection/server", "c3.whatsapp.net")
         threading = Mitakuuluu.load("connection/threading", true)
