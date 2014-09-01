@@ -5,7 +5,7 @@ import harbour.mitakuuluu2.client 1.0
 Dialog {
     id: page
     objectName: "account"
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     property string pushname: ""
     property string presence: ""

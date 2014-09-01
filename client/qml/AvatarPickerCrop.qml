@@ -5,7 +5,7 @@ import Sailfish.Gallery.private 1.0
 
 ImagePickerPage {
     id: root
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     // Readonly
     property url avatarSource

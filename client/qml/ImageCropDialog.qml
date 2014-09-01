@@ -11,7 +11,7 @@ import Sailfish.Gallery 1.0
 
 SplitViewDialog {
     id: aspectRatioDialog
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     property bool avatarCrop
 

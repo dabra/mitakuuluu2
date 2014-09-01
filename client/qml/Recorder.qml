@@ -6,7 +6,7 @@ import QtMultimedia 5.0
 Dialog {
     id: page
     objectName: "recorder"
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     canAccept: false
 

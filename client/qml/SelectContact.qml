@@ -7,7 +7,7 @@ Dialog {
     id: page
     objectName: "selectContact"
     canAccept: false
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     function accept() {
         if (canAccept) {

@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 Dialog {
     id: page
     objectName: "messageComposer"
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     property string message
 

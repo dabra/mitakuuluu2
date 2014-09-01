@@ -5,7 +5,7 @@ import org.nemomobile.contacts 1.0
 Dialog {
     id: page
     objectName: "selectContactCard"
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     property int selectedIndex: -1
     property bool broadcastMode: true

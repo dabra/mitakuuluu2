@@ -4,7 +4,7 @@ import harbour.mitakuuluu2.client 1.0
 
 Dialog {
     id: addContact
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     property string jid
     function showData(ojid, oname) {

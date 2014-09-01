@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 Page {
     id: page
     objectName: "broadcastPage"
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     SilicaFlickable {
         anchors.fill: parent
