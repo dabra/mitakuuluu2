@@ -186,6 +186,10 @@ void QueryExecutor::processQuery(const QVariant &msg)
             getConversationCount(query);
             break;
         }
+        case QueryType::ConversationLoadFiltered: {
+            searchMessage(query);
+            break;
+        }
         default: {
             break;
         }
@@ -436,7 +440,6 @@ void QueryExecutor::setContactsResults(QVariantMap &query)
 {
     QString lastJid;
     QStringList newJids;
-    QVariantList avatars;
     QVariantList results = query["contacts"].toList();
     QVariantList blocked = query["blocked"].toList();
     foreach (QVariant vcontact, results) {
@@ -517,7 +520,6 @@ void QueryExecutor::setContactsResults(QVariantMap &query)
         }
     }
     query["jids"] = newJids;
-    query["avatars"] = avatars;
 
     Q_EMIT actionDone(query);
 }
@@ -926,6 +928,28 @@ void QueryExecutor::getConversationCount(QVariantMap &query)
         count = c.value(0).toInt();
     }
     query["count"] = count;
+
+    Q_EMIT actionDone(query);
+}
+
+void QueryExecutor::searchMessage(QVariantMap &query)
+{
+    QString table = query["table"].toString();
+
+    QSqlQuery q(db);
+    q.prepare(QString("SELECT * FROM u%1 WHERE watype=0 AND data LIKE (:pattern) ORDER BY timestamp DESC;").arg(table));
+    q.bindValue(":pattern", QString("%%1%").arg(query["filter"].toString()));
+    q.exec();
+
+    QVariantList messages;
+    while (q.next()) {
+        QVariantMap message;
+        for (int i = 0; i < q.record().count(); i ++) {
+            message[q.record().fieldName(i)] = q.value(i);
+        }
+        messages.append(message);
+    }
+    query["messages"] = messages;
 
     Q_EMIT actionDone(query);
 }

@@ -47,6 +47,7 @@
 #include "contactsbasemodel.h"
 #include "contactsfiltermodel.h"
 #include "conversationmodel.h"
+#include "conversationfiltermodel.h"
 #include "mitakuuluu.h"
 #include "audiorecorder.h"
 
@@ -222,6 +223,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ContactsFilterModel>("harbour.mitakuuluu2.client", 1, 0, "ContactsFilterModel");
     qmlRegisterType<ConversationModel>("harbour.mitakuuluu2.client", 1, 0, "ConversationModel");
     qmlRegisterType<AudioRecorder>("harbour.mitakuuluu2.client", 1, 0, "AudioRecorder");
+    qmlRegisterType<ConversationFilterModel>("harbour.mitakuuluu2.client", 1, 0, "ConversationFilterModel");
 
     qmlRegisterSingletonType<ContactsBaseModel>("harbour.mitakuuluu2.client", 1, 0, "ContactsBaseModel", contactsmodel_singleton_provider);
     qmlRegisterSingletonType<Mitakuuluu>("harbour.mitakuuluu2.client", 1, 0, "Mitakuuluu", mitakuuluu_singleton_provider);

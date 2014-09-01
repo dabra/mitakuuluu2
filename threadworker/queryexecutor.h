@@ -46,6 +46,7 @@ namespace QueryType {
         ConversationGetMedia,
         ConversationGetCount,
         ConversationResendMessage,
+        ConversationLoadFiltered,
         AccountGetData = 200,
         AccountSetData,
         AccountRemoveData,
@@ -103,6 +104,7 @@ private:
     void getContactMedia(QVariantMap &query);
     void groupParticipants(QVariantMap &query);
     void getConversationCount(QVariantMap &query);
+    void searchMessage(QVariantMap &query);
 
 private:
     ThreadWorker m_worker;

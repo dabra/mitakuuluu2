@@ -38,7 +38,8 @@ SOURCES += \
     src/mitakuuluu.cpp \
     src/contactsfiltermodel.cpp \
     src/contactsbasemodel.cpp \
-    src/main.cpp
+    src/main.cpp \
+    src/conversationfiltermodel.cpp
 
 HEADERS += \
     ../threadworker/threadworker.h \
@@ -51,4 +52,5 @@ HEADERS += \
     src/audiorecorder.h \
     ../logging/logging.h \
     src/contactsfiltermodel.h \
-    src/contactsbasemodel.h
+    src/contactsbasemodel.h \
+    src/conversationfiltermodel.h
