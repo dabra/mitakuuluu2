@@ -219,7 +219,9 @@ Client::Client(QObject *parent) : QObject(parent)
 
     // Timers
     pendingMessagesTimer = new QTimer(this);
+    pendingMessagesTimer->setSingleShot(true);
     retryLoginTimer = new QTimer(this);
+    retryLoginTimer->setSingleShot(true);
 
     connect(pendingMessagesTimer, SIGNAL(timeout()), this, SLOT(sendMessagesInQueue()));
     connect(retryLoginTimer, SIGNAL(timeout()), this, SLOT(verifyAndConnect()));
@@ -594,9 +596,12 @@ void Client::networkStatusChanged(bool isOnline)
     {
         Q_EMIT networkOnline();
         updateActiveNetworkID();
-        if (connectionStatus == Disconnected || connectionStatus == WaitingForConnection)
+        if ((connectionStatus == Disconnected || connectionStatus == WaitingForConnection) && !retryLoginTimer->isActive()) {
             QTimer::singleShot(2000, this, SLOT(verifyAndConnect()));
-            //verifyAndConnect();
+        }
+        else if (connectionStatus == RegistrationFailed) {
+            getTokenScratch();
+        }
     }
 }
 
@@ -784,7 +789,6 @@ void Client::onAuthSuccess(const QString &creation, const QString &expiration, c
     dbExecutor->queueAction(query);
 
     pendingMessagesTimer->start(CHECK_QUEUE_INTERVAL);
-    pendingMessagesTimer->setSingleShot(true);
 
     Q_EMIT connectionSendGetServerProperties();
     Q_EMIT connectionSendGetClientConfig();
@@ -850,7 +854,6 @@ void Client::verifyAndConnect()
         connectToServer();
     }
     else {
-        getTokenScratch();
         Q_EMIT noAccountData();
     }
     if (session) {
@@ -1112,7 +1115,7 @@ void Client::syncResultsAvailable(const QVariantList &results)
 
             contacts[i] = item;
             QString jid = item["jid"].toString();
-            getContactStatus(jid);
+            refreshContact(jid);
             requestPresenceSubscription(jid);
         }
         _synccontacts.clear();
@@ -1215,13 +1218,15 @@ void Client::connectionClosed()
             if (!isRegistered)
             {
                 // Immediately try to re-register
+                if (retryLoginTimer->isActive()) {
+                    retryLoginTimer->stop();
+                }
                 QTimer::singleShot(0,this,SLOT(verifyAndConnect()));
             }
             else
             {
                 qDebug() << "Mitakuuluu will retry the connection in 10 seconds.";
                 retryLoginTimer->start(RETRY_LOGIN_INTERVAL);
-                retryLoginTimer->setSingleShot(true);
             }
         }
         else
@@ -1264,7 +1269,9 @@ void Client::sendMessagesInQueue()
             Q_EMIT connectionSendMessage(message);
         }
 
-        pendingMessagesTimer->start(CHECK_QUEUE_INTERVAL);
+        if (connectionStatus == LoggedIn) {
+            pendingMessagesTimer->start(CHECK_QUEUE_INTERVAL);
+        }
     }
 }
 
@@ -2943,7 +2950,7 @@ void Client::saveGroupInfo(const QString &jid, const QString &owner, const QStri
     group["uuid"] = uuid;
     dbExecutor->queueAction(group);
 
-    //getPicture(jid);
+    getPicture(jid);
 }
 
 void Client::dbResults(const QVariant &result)
@@ -3075,7 +3082,6 @@ void Client::dbResults(const QVariant &result)
             else {
                 newContactAdd(pushName, jid);
             }
-            getPicture(jid);
         }
         break;
     }
@@ -3146,10 +3152,6 @@ void Client::dbResults(const QVariant &result)
         }
         else if (jids.isEmpty()) {
             //synchronizePhonebook();
-        }
-        QVariantList avatars = reply["avatars"].toList();
-        foreach (const QVariant &jid, avatars) {
-            getPicture(jid.toString());
         }
         break;
     }
