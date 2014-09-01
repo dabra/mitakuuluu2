@@ -36,7 +36,7 @@ Page {
 
     FileSortModel {
         id: filemodel
-        sorting: true
+        sorting: false
         fileModel: FileSourceModel {
             id: filesourcemodel
             filter: [jid + "-*"]
