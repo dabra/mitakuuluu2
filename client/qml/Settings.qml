@@ -10,7 +10,7 @@ import "Utilities.js" as Utilities
 Page {
     id: page
     objectName: "settings"
-    allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
+    allowedOrientations: globalOrientation
 
     property variant coverNames: []
 
@@ -234,6 +234,12 @@ Page {
                 checked: lockPortrait
                 text: qsTr("Lock conversation orientation in portrait", "Settings option name")
                 onClicked: lockPortrait = checked
+            }
+
+            TextSwitch {
+                checked: lockPortraitPages
+                text: qsTr("Lock other pages orientation in portrait", "Settings option name")
+                onClicked: lockPortraitPages = checked
             }
 
             TextSwitch {
