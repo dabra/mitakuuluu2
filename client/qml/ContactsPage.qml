@@ -26,6 +26,9 @@ Page {
             horizontalHint.visible = firstStartContacts
             hintLabel.visible = firstStartContacts
         }
+        else if (status == PageStatus.Inactive) {
+            disco.running = false
+        }
     }
 
     Connections {
@@ -72,6 +75,78 @@ Page {
         PageHeader {
             id: header
             title: qsTr("Contacts", "Contacts page title")
+            _titleItem.color: disco.running ? Qt.rgba(disco.cr, disco.cg, disco.cb, disco.ca) : Theme.highlightColor
+
+            Timer {
+                id: disco
+                running: false
+                interval: 50
+                repeat: true
+
+                property real cr: 1.0
+                property real cg: 0.0
+                property real cb: 0.0
+                property real ca: 0.5
+
+                property bool cru: true
+                property bool cgu: true
+                property bool cbu: true
+                property bool cau: true
+
+                onTriggered: {
+                    if (cru) {
+                        cr += 0.11
+                    }
+                    else {
+                        cr -= 0.11
+                    }
+                    if (cr >= 1) {
+                        cru = false
+                    }
+                    else if (cr <= 0) {
+                        cru = true
+                    }
+
+                    if (cgu) {
+                        cg += 0.12
+                    }
+                    else {
+                        cg -= 0.12
+                    }
+                    if (cg >= 1) {
+                        cgu = false
+                    }
+                    else if (cg <= 0) {
+                        cgu = true
+                    }
+
+                    if (cbu) {
+                        cb += 0.13
+                    }
+                    else {
+                        cb -= 0.13
+                    }
+                    if (cb >= 1) {
+                        cbu = false
+                    }
+                    else if (cb <= 0) {
+                        cbu = true
+                    }
+
+                    if (cau) {
+                        ca += 0.05
+                    }
+                    else {
+                        ca -= 0.05
+                    }
+                    if (ca >= 1) {
+                        cau = false
+                    }
+                    else if (ca <= 0.1) {
+                        cau = true
+                    }
+                }
+            }
         }
 
         SearchField {
@@ -132,6 +207,18 @@ Page {
         loops: Animation.Infinite
         anchors.verticalCenter: page.verticalCenter
         visible: false
+    }
+
+    MouseArea {
+        x: 0
+        y: 0
+        z: 1
+        width: parent.width
+        height: header.height
+        preventStealing: true
+        onDoubleClicked: {
+            disco.running = !disco.running
+        }
     }
 
     Component {
