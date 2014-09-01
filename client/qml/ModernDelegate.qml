@@ -11,7 +11,7 @@ MouseArea {
 
     property bool down: pressed && containsMouse && !DragFilter.canceled
 
-    property bool haveSection: (index == conversationView.count - 1) || (conversationView.model.get(index + 1).section != conversationView.model.get(index).section)
+    property bool haveSection: model.section ? ((index == conversationView.count - 1) || (conversationView.model.get(index + 1).section != conversationView.model.get(index).section)) : false
 
     width: parent.width
     height: mainBg.height + content.anchors.topMargin + (menuOpen ? _menuItem.height : 0) + (urlmenuOpen ? _urlmenuItem.height : 0)
@@ -331,7 +331,7 @@ MouseArea {
     SectionHeader {
         id: sectionHeader
         anchors.top: parent.top
-        text: model.section
+        text: haveSection ? model.section : ""
         visible: haveSection
 
     }
