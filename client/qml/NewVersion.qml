@@ -8,7 +8,8 @@ Dialog {
     allowedOrientations: Orientation.Portrait | (allowLandscapeInverted ? (Orientation.Landscape | Orientation.LandscapeInverted) : Orientation.Landscape)
 
     onAccepted: {
-        Qt.openUrlExternally("https://openrepos.net/content/coderus/mitakuuluu")
+        //Qt.openUrlExternally("https://openrepos.net/content/coderus/mitakuuluu")
+        Qt.openUrlExternally(Mitakuuluu.webVersion.link)
     }
 
     SilicaFlickable {
@@ -39,6 +40,16 @@ Dialog {
                     margins: Theme.paddingLarge
                 }
                 text: qsTr("Version: v%1").arg(Mitakuuluu.webVersion.version)
+                wrapMode: Text.Wrap
+            }
+
+            Label {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Theme.paddingLarge
+                }
+                text: qsTr("Size: %1").arg(Format.formatFileSize(Mitakuuluu.webVersion.size))
                 wrapMode: Text.Wrap
             }
 
