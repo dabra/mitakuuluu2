@@ -116,6 +116,16 @@ Page {
                     id: contextMenuItem
                     x: parent !== null ? -parent.x : 0.0
 
+                    property bool expanded: contextMenuItem._expanded
+                    onExpandedChanged: {
+                        if (expanded) {
+                            var endPos = avatarGrid.y + avatarGrid.expandItem.y + avatarGrid.expandItem.height - flick.contentY
+                            if (endPos > page.height) {
+                                flick.contentY += (endPos - page.height)
+                            }
+                        }
+                    }
+
                     MenuItem {
                         text: qsTr("Save to Gallery")
                         visible: avatarGrid.expandItem && avatarGrid.expandItem.inCache
