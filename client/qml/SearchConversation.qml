@@ -25,6 +25,7 @@ Page {
         id: searchField
         anchors.top: pageHeader.bottom
         width: parent.width
+        placeholderText: qsTr("message text")
         onTextChanged: {
             filterModel.filter = text
         }
