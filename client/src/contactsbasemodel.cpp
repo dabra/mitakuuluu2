@@ -118,12 +118,13 @@ void ContactsBaseModel::deleteContact(const QString &jid)
         int row = _modelData.keys().indexOf(jid);
         beginRemoveRows(QModelIndex(), row, row);
         _modelData.remove(jid);
+        endRemoveRows();
+
         QVariantMap query;
         query["type"] = QueryType::ContactsRemove;
         query["jid"]  = jid;
         query["uuid"] = uuid;
         dbExecutor->queueAction(query);
-        endRemoveRows();
 
         iface->call(QDBus::NoBlock, "contactRemoved", jid);
     }
