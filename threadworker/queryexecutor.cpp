@@ -288,7 +288,7 @@ void QueryExecutor::messageNotify(QVariantMap &query)
         int unread = sql.value(3).toInt();
         QString pushname = sql.value(4).toString();
         query["unread"] = unread;
-        if (jid.contains("-")) {
+        if (jid.contains("-") || query["phonebook"].toBool()) {
             query["avatar"] = sql.value(2);
         }
         else {

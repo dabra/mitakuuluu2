@@ -332,6 +332,8 @@ void Client::readSettings()
     reconnectionLimit = settings.value("settings/reconnectionLimit", 20).toInt();
     disconnectStreamError = settings.value("settings/disconnectStreamError", false).toBool();
 
+    usePhonebookAvatars = settings.value("settings/usePhonebookAvatars", true).toBool();
+
     showConnectionNotifications = settings.value("settings/showConnectionNotifications", false).toBool();
 
     settings.beginGroup("muting");
@@ -480,9 +482,10 @@ void Client::addMessage(const FMessage &message)
 
             qDebug() << "show notification for:" << message.key.id << "jid:" << jid;
             QVariantMap notify;
+            notify["type"] = QueryType::ConversationNotifyMessage;
+            notify["phonebook"] = usePhonebookAvatars;
             notify["jid"] = jid;
             notify["pushName"] = message.notify_name;
-            notify["type"] = QueryType::ConversationNotifyMessage;
             notify["media"] = message.media_wa_type != FMessage::Text;
             notify["msg"] = text;
             notify["uuid"] = uuid;
