@@ -223,6 +223,14 @@ Page {
                     pageStack.push(Qt.resolvedUrl("MutingSelector.qml"), {"jid": page.jid})
                 }
             }
+
+            MenuItem {
+                text: qsTr("Search message")
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("SearchConversation.qml"), {"jid": page.jid})
+                }
+            }
+
             MenuItem {
                 text: qsTr("Load old conversation", "Conversation menu item")
                 visible: conversationView.count < conversationModel.allCount
