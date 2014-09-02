@@ -193,8 +193,8 @@ ApplicationWindow {
             return jid.split("@")[0]
     }
 
-    function getContactColor(jid) {
-        if (jid.indexOf("-") > 0) {
+    function getContactColor(jid, isGroup) {
+        if (isGroup) {
             if (jid == Mitakuuluu.myJid) {
                 return Theme.highlightColor
             }

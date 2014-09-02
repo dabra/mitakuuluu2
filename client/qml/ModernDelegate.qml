@@ -35,7 +35,7 @@ MouseArea {
     property Item fakeClipboardObject: null
 
     property variant messageColor: down ? highlightColor : contactColor
-    property variant contactColor: Theme.rgba(getContactColor(model.author), Theme.highlightBackgroundOpacity)
+    property variant contactColor: Theme.rgba(getContactColor(model.author, isGroup), Theme.highlightBackgroundOpacity)
     property variant highlightColor: Theme.rgba(Theme.highlightBackgroundColor, Theme.highlightBackgroundOpacity)
 
     property int maxWidth: parent.width - Theme.itemSizeLarge
