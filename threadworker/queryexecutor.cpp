@@ -642,10 +642,15 @@ void QueryExecutor::setContactModel(QVariantMap &query)
 
 void QueryExecutor::removeContact(QVariantMap &query)
 {
+    QString jid = query["jid"].toString();
+
     QSqlQuery sql(db);
     sql.prepare("DELETE FROM contacts WHERE jid=(:jid);");
-    sql.bindValue(":jid", query["jid"]);
+    sql.bindValue(":jid", jid);
     sql.exec();
+
+    QString table = jid.split("@").first().replace("-", "g");
+    db.exec(QString("DELETE FROM u%1;").arg(table));
 
     Q_EMIT actionDone(query);
 }
