@@ -205,7 +205,7 @@ Page {
 
         PullDownMenu {
             busy: typing
-            MenuItem {
+            /*MenuItem {
                 text: qsTr("Clear all messages", "Conversation menu item")
                 onClicked: {
                     remorseAll.execute(qsTr("Clear all messages", "Conversation delete all messages remorse popup"),
@@ -215,7 +215,7 @@ Page {
                                        },
                                        5000)
                 }
-            }
+            }*/
 
             MenuItem {
                 text: qsTr("Muting", "Contacts context menu muting item")
