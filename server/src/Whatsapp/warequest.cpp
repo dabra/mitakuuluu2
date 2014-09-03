@@ -81,7 +81,7 @@ void WARequest::onResponse()
         }
     }
     else {
-        emit httpError(reply->error());
+        emit httpError(reply->errorString());
     }
 }
 
@@ -99,7 +99,7 @@ void WARequest::readResult()
         emit finished(mapResult);
     }
     else
-        emit httpError(QNetworkReply::UnknownContentError);
+        emit httpError("Cannot parse json reply");
 }
 
 void WARequest::addParam(QString name, QString value)
@@ -109,8 +109,8 @@ void WARequest::addParam(QString name, QString value)
 
 void WARequest::error(QNetworkReply::NetworkError code)
 {
-    qDebug() << "WARequest network error:" << QString::number(code);
-    emit httpError(code);
+    qDebug() << "WARequest network error:" << reply->errorString() << QString::number(code);
+    emit httpError(reply->errorString());
 }
 
 void WARequest::sslErrors(const QList<QSslError> &errors)

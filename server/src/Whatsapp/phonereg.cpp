@@ -101,8 +101,8 @@ void PhoneReg::startCodeRequest()
             this,SLOT(onCodeRequestDone(QVariantMap)));
     connect(request,SIGNAL(sslError()),
             this,SLOT(sslError()));
-    connect(request,SIGNAL(httpError(int)),
-            this,SLOT(errorHandler(int)));
+    connect(request,SIGNAL(httpError(QString)),
+            this,SLOT(errorHandler(QString)));
     request->getRequest();
 }
 
@@ -170,11 +170,11 @@ void PhoneReg::onRegRequestDone(const QVariantMap &result)
     emit finished(result);
 }
 
-void PhoneReg::errorHandler(int code)
+void PhoneReg::errorHandler(const QString &errorString)
 {
     QVariantMap result;
 
-    result.insert("reason","http_error_" + QString::number(code));
+    result.insert("reason", errorString);
     emit finished(result);
 }
 

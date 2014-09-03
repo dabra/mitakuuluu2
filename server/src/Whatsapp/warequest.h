@@ -46,7 +46,7 @@ public:
 
 signals:
     void finished(const QVariantMap &result);
-    void httpError(int error);
+    void httpError(const QString &errorString);
     void sslError();
 
 public slots:

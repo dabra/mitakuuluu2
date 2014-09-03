@@ -58,7 +58,7 @@ public slots:
     void onRegRequestDone(const QVariantMap &result);
     void start();
     void startRegRequest();
-    void errorHandler(int code);
+    void errorHandler(const QString &errorString);
     void sslError();
 
 private:
