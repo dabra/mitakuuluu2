@@ -357,7 +357,7 @@ private slots:
 
     void checkActivity();
     void wakeupStopped();
-    void showPendingNotifications();
+    void onDelayedNotificationTriggered();
 
 signals:
     void authFail(const QString &username, const QString &reason);
@@ -503,6 +503,7 @@ private:
     //QHash<QString, MNotification*> _offlineMessages;
     QStringList _availableJids;
     QHash<QString, MNotification*> _notificationJid;
+    QHash<QString, MNotification*> _notificationPendingJid;
     QHash<QString, QTimer*> _pendingNotificationsTimer;
     QHash<QString, QString> _mediaJidHash;
     QHash<QString, QString> _mediaMsgidHash;

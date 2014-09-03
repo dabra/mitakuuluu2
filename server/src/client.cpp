@@ -268,12 +268,6 @@ Client::~Client()
     // Update data counters
     dataCounters.writeCounters();
 
-    qDebug() << "Removing notifications";
-
-    for (int i = 0; i < _notificationJid.count(); i++) {
-        if (_notificationJid.values()[i])
-            _notificationJid.values()[i]->remove();
-    }
     qDebug() << "Destroying database";
     if (dbExecutor)
         delete dbExecutor;
@@ -1076,11 +1070,23 @@ void Client::wakeupStopped()
     qDebug() << "WAKEUP STOPPED! WHAT SHOULD I DO NOW!?";
 }
 
-void Client::showPendingNotifications()
+void Client::onDelayedNotificationTriggered()
 {
-    foreach (const QString &jid, _notificationJid.keys()) {
-        if (_notificationJid.value(jid) && !_notificationJid.value(jid)->isPublished()) {
-            _notificationJid.value(jid)->publish();
+    QTimer *delayedTimer = qobject_cast<QTimer*>(sender());
+    if (delayedTimer) {
+        QString jid = delayedTimer->objectName();
+        if (_notificationPendingJid.contains(jid) && _notificationPendingJid[jid] && !_notificationPendingJid[jid]->isPublished()) {
+            if (_notificationJid.contains(jid)) {
+                MNotification *notif = _notificationJid[jid];
+                _notificationJid.remove(jid);
+                if (notif) {
+                    notif->remove();
+                    delete notif;
+                }
+            }
+            _notificationPendingJid[jid]->publish();
+            _notificationJid[jid] = _notificationPendingJid[jid];
+            _notificationPendingJid.remove(jid);
         }
     }
 }
@@ -1101,16 +1107,28 @@ void Client::setActiveJid(const QString &jid)
     qDebug() << "activeJid:" << jid;
     _activeJid = jid;
     setUnreadCount(jid, 0);
-    if (_notificationJid.contains(jid) && _notificationJid[jid]) {
+    if (_notificationJid.contains(jid)) {
         qDebug() << "clear" << jid << "notifications";
-        if (_notificationJid[jid]->isPublished()) {
-            _notificationJid[jid]->remove();
+        MNotification *notif = _notificationJid[jid];
+        _notificationJid.remove(jid);
+        if (notif) {
+            notif->remove();
+            delete notif;
         }
-        if (_notificationJid[jid]) {
-            delete _notificationJid[jid];
-        }
-        _notificationJid[jid] = 0;
     }
+    if (_notificationPendingJid.contains(jid)) {
+        qDebug() << "clear" << jid << "notifications";
+        MNotification *notif = _notificationPendingJid[jid];
+        _notificationPendingJid.remove(jid);
+        if (notif) {
+            notif->remove();
+            delete notif;
+        }
+    }
+    if (_pendingNotificationsTimer.contains(jid) && _pendingNotificationsTimer[jid] && _pendingNotificationsTimer[jid]->isActive()) {
+        _pendingNotificationsTimer[jid]->stop();
+    }
+
 }
 
 void Client::syncResultsAvailable(const QVariantList &results)
@@ -1434,9 +1452,7 @@ void Client::getTokenScratch()
 void Client::clearNotification()
 {
     if (connectionNotification) {
-        if (connectionNotification->isPublished()) {
-            connectionNotification->remove();
-        }
+        delete connectionNotification;
         connectionNotification = 0;
     }
 }
@@ -1534,7 +1550,7 @@ void Client::startDownloadMessage(const FMessage &msg)
 void Client::showOfflineNotifications()
 {
     foreach (const QString &jid, _notificationJid.keys()) {
-        if (_notificationJid[jid]) {
+        if (_notificationJid[jid] && !_notificationJid[jid]->isPublished()) {
             qDebug() << "valid notification for" << jid << _notificationJid[jid]->body() << "published:" << _notificationJid[jid]->isPublished();
             _notificationJid[jid]->publish();
         }
@@ -2886,9 +2902,7 @@ void Client::updateNotification(const QString &text)
 {
     qDebug() << "Have published:" << (connectionNotification ? "yes" : "no");
     if (connectionNotification) {
-        if (connectionNotification->isPublished()) {
-            connectionNotification->remove();
-        }
+        delete connectionNotification;
         connectionNotification = 0;
     }
     if (showConnectionNotifications) {
@@ -3013,10 +3027,14 @@ void Client::dbResults(const QVariant &result)
         avatar = avatar.replace("file://", "");
         avatar = avatar.replace("///", "/");
         QString name = reply["name"].toString();
-        if (_notificationJid[jid]) {
-            _notificationJid[jid]->remove();
-            _notificationJid[jid] = 0;
-        }
+        /*if (_notificationJid.contains(jid)) {
+            MNotification *notif = _notificationJid[jid];
+            _notificationJid.remove(jid);
+            if (notif) {
+                notif->remove();
+                delete notif;
+            }
+        }*/
         int unread = getUnreadCount(jid);
         //unread++;
         //setUnreadCount(jid, unread);
@@ -3057,9 +3075,13 @@ void Client::dbResults(const QVariant &result)
             notification->setAction(action);
 
             if (reply["offline"].toBool()) {
-                if (_notificationJid.contains(jid) && _notificationJid[jid]) {
-                    delete _notificationJid[jid];
-                    _notificationJid[jid] = 0;
+                if (_notificationJid.contains(jid)) {
+                    MNotification *notif = _notificationJid[jid];
+                    _notificationJid.remove(jid);
+                    if (notif) {
+                        notif->remove();
+                        delete notif;
+                    }
                 }
                 _notificationJid[jid] = notification;
 
@@ -3070,15 +3092,47 @@ void Client::dbResults(const QVariant &result)
                     showOfflineNotifications();
             }
             else {
-                //if (!_pendingNotificationsTimer->isActive()) {
-                    notification->publish();
-                //    _pendingNotificationsTimer->start();
-                //}
-                if (_notificationJid.contains(jid) && _notificationJid[jid]) {
-                    _notificationJid[jid]->remove();
-                    _notificationJid[jid] = 0;
+                if (_pendingNotificationsTimer.contains(jid) && _pendingNotificationsTimer[jid] && _pendingNotificationsTimer[jid]->isActive()) {
+                    if (_notificationPendingJid.contains(jid)) {
+                        MNotification *notif = _notificationPendingJid[jid];
+                        _notificationPendingJid.remove(jid);
+                        if (notif) {
+                            notif->remove();
+                            delete notif;
+                        }
+                    }
+                    _notificationPendingJid[jid] = notification;
                 }
-                _notificationJid[jid] = notification;
+                else {
+                    if (_notificationJid.contains(jid)) {
+                        MNotification *notif = _notificationJid[jid];
+                        _notificationJid.remove(jid);
+                        if (notif) {
+                            notif->remove();
+                            delete notif;
+                        }
+                    }
+                    _notificationJid[jid] = notification;
+                    notification->publish();
+
+                    if (!_pendingNotificationsTimer.contains(jid)) {
+                        QTimer *delayedNotification = new QTimer(this);
+                        delayedNotification->setSingleShot(true);
+                        delayedNotification->setInterval(5000);
+                        delayedNotification->setObjectName(jid);
+                        QObject::connect(delayedNotification, SIGNAL(timeout()), this, SLOT(onDelayedNotificationTriggered()));
+                        _pendingNotificationsTimer[jid] = delayedNotification;
+                    }
+                    if (_notificationPendingJid.contains(jid)) {
+                        MNotification *notif = _notificationPendingJid[jid];
+                        _notificationPendingJid.remove(jid);
+                        if (notif) {
+                            notif->remove();
+                            delete notif;
+                        }
+                    }
+                    _pendingNotificationsTimer[jid]->start();
+                }
             }
         }
         break;
