@@ -473,6 +473,18 @@ Page {
                 onClicked: showConnectionNotifications = checked
             }
 
+            Slider {
+                width: parent.width
+                maximumValue: 360
+                minimumValue: 1
+                label: qsTr("Notifications delay", "Settings option name")
+                value: notificationsDelay
+                valueText: qsTr("%n seconds", "Settings option value label", parseInt(value))
+                onReleased: {
+                    notificationsDelay = parseInt(value)
+                }
+            }
+
             SectionHeader {
                 text: qsTr("Common", "Settings page section name")
             }

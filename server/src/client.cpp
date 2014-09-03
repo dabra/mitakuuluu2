@@ -343,6 +343,7 @@ void Client::readSettings()
     usePhonebookAvatars = settings.value("settings/usePhonebookAvatars", true).toBool();
 
     showConnectionNotifications = settings.value("settings/showConnectionNotifications", false).toBool();
+    notificationsDelay = settings.value("settings/notificationsDelay", 5).toInt();
 
     settings.beginGroup("muting");
     foreach (const QString &key, settings.childKeys()) {
@@ -3118,7 +3119,6 @@ void Client::dbResults(const QVariant &result)
                     if (!_pendingNotificationsTimer.contains(jid)) {
                         QTimer *delayedNotification = new QTimer(this);
                         delayedNotification->setSingleShot(true);
-                        delayedNotification->setInterval(5000);
                         delayedNotification->setObjectName(jid);
                         QObject::connect(delayedNotification, SIGNAL(timeout()), this, SLOT(onDelayedNotificationTriggered()));
                         _pendingNotificationsTimer[jid] = delayedNotification;
@@ -3131,7 +3131,7 @@ void Client::dbResults(const QVariant &result)
                             delete notif;
                         }
                     }
-                    _pendingNotificationsTimer[jid]->start();
+                    _pendingNotificationsTimer[jid]->start(notificationsDelay * 1000);
                 }
             }
         }

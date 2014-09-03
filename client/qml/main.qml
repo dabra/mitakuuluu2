@@ -359,6 +359,9 @@ ApplicationWindow {
     property bool usePhonebookAvatars: true
     onUsePhonebookAvatarsChanged: Mitakuuluu.save("settings/usePhonebookAvatars", usePhonebookAvatars)
 
+    property int notificationsDelay: 5
+    onNotificationsDelayChanged: Mitakuuluu.save("settings/notificationsDelay", notificationsDelay)
+
     property bool updateAvailable: false
 
     property int currentOrientation: pageStack._currentOrientation
@@ -1024,6 +1027,7 @@ ApplicationWindow {
         reconnectionInterval = Mitakuuluu.load("settings/reconnectionInterval", 1)
         reconnectionLimit = Mitakuuluu.load("settings/reconnectionLimit", 20)
         usePhonebookAvatars = Mitakuuluu.load("settings/usePhonebookAvatars", true)
+        notificationsDelay = Mitakuuluu.load("settings/notificationsDelay", 5)
 
         var hiddenContacts = Mitakuuluu.loadGroup("hidden")
         var toHide = []

@@ -562,6 +562,7 @@ private:
     int reconnectionLimit;
     bool disconnectStreamError;
     bool usePhonebookAvatars;
+    int notificationsDelay;
 
     QMap<QString, qlonglong> mutingList;
 
