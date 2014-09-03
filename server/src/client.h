@@ -273,6 +273,7 @@ private slots:
      **/
 
     // Handles a network change
+    void doCheckNetworkStatus();
     void networkStatusChanged(bool isOnline);
     void registrationSuccessful(const QVariantMap &result);
 
@@ -283,7 +284,6 @@ private slots:
                    const QByteArray &nextChallenge);
 
     void authFailed();
-    void doReconnect();
     void clientDestroyed();
 
     void networkConfigurationChanged(const QNetworkConfiguration &conf);
@@ -357,6 +357,7 @@ private slots:
 
     void checkActivity();
     void wakeupStopped();
+    void showPendingNotifications();
 
 signals:
     void authFail(const QString &username, const QString &reason);
@@ -502,6 +503,7 @@ private:
     //QHash<QString, MNotification*> _offlineMessages;
     QStringList _availableJids;
     QHash<QString, MNotification*> _notificationJid;
+    QHash<QString, QTimer*> _pendingNotificationsTimer;
     QHash<QString, QString> _mediaJidHash;
     QHash<QString, QString> _mediaMsgidHash;
     QHash<QString, QString> _mediaNameHash;
@@ -520,6 +522,8 @@ private:
 
     qint64 lastDisconnect;
     int disconnectCount;
+    int reconnectInterval;
+    int lastReconnect;
 
     QVariantMap _mediaProgress;
 

@@ -166,6 +166,8 @@ Client::Client(QObject *parent) : QObject(parent)
     connectionNotification = 0;
     disconnectCount = 0;
     lastDisconnect = 0;
+    reconnectInterval = 1;
+    lastReconnect = 1;
 
     _privacy = QVariantMap();
     _totalUnread = 0;
@@ -220,11 +222,11 @@ Client::Client(QObject *parent) : QObject(parent)
     // Timers
     pendingMessagesTimer = new QTimer(this);
     pendingMessagesTimer->setSingleShot(true);
+    QObject::connect(pendingMessagesTimer, SIGNAL(timeout()), this, SLOT(sendMessagesInQueue()));
+
     retryLoginTimer = new QTimer(this);
     retryLoginTimer->setSingleShot(true);
-
-    connect(pendingMessagesTimer, SIGNAL(timeout()), this, SLOT(sendMessagesInQueue()));
-    connect(retryLoginTimer, SIGNAL(timeout()), this, SLOT(verifyAndConnect()));
+    QObject::connect(retryLoginTimer, SIGNAL(timeout()), this, SLOT(doCheckNetworkStatus()));
 
     reg = NULL;
 
@@ -246,11 +248,16 @@ Client::Client(QObject *parent) : QObject(parent)
         qDebug() << "Have no connection!";
     }
 
-    recheckAccountAndConnect();
-
     keepalive = new BackgroundActivity(this);
     connect(keepalive, SIGNAL(running()), this, SLOT(checkActivity()));
     connect(keepalive, SIGNAL(stopped()), this, SLOT(wakeupStopped()));
+
+    //_pendingNotificationsTimer = new QTimer(this);
+    //_pendingNotificationsTimer->setSingleShot(true);
+    //_pendingNotificationsTimer->setInterval(5000);
+    //QObject::connect(_pendingNotificationsTimer, SIGNAL(timeout()), this, SLOT(showPendingNotifications()));
+
+    recheckAccountAndConnect();
 }
 
 /**
@@ -271,6 +278,13 @@ Client::~Client()
     if (dbExecutor)
         delete dbExecutor;
     qDebug() << "Application destroyed";
+}
+
+void Client::doCheckNetworkStatus()
+{
+    if ((connectionStatus == Disconnected || connectionStatus == WaitingForConnection) && isOnline) {
+        verifyAndConnect();
+    }
 }
 
 /** ***********************************************************************
@@ -599,8 +613,13 @@ void Client::networkStatusChanged(bool isOnline)
     {
         Q_EMIT networkOnline();
         updateActiveNetworkID();
-        if ((connectionStatus == Disconnected || connectionStatus == WaitingForConnection) && !retryLoginTimer->isActive()) {
-            QTimer::singleShot(2000, this, SLOT(verifyAndConnect()));
+        if ((connectionStatus == Disconnected || connectionStatus == WaitingForConnection)) {
+            if (retryLoginTimer->isActive()) {
+                retryLoginTimer->stop();
+            }
+            lastReconnect = 1;
+            reconnectInterval = 1;
+            retryLoginTimer->start(1000);
         }
         else if (connectionStatus == RegistrationFailed) {
             getTokenScratch();
@@ -808,6 +827,8 @@ void Client::onAuthSuccess(const QString &creation, const QString &expiration, c
     if (useKeepalive) {
         keepalive->wait(BackgroundActivity::TenMinutes);
     }
+
+    reconnectInterval = 1;
 }
 
 void Client::authFailed()
@@ -818,14 +839,6 @@ void Client::authFailed()
     connectionClosed();
     Q_EMIT authFail(this->userName, "exception");
     Q_EMIT disconnected("login");
-}
-
-void Client::doReconnect()
-{
-    qDebug() << "do reconnect";
-    connectionStatus = Connecting;
-    Q_EMIT connectionStatusChanged(connectionStatus);
-    connectionClosed();
 }
 
 void Client::clientDestroyed()
@@ -963,7 +976,6 @@ void Client::connectToServer()
     QObject::connect(connectionPtr.data(), SIGNAL(authFailed()), this, SLOT(authFailed()));
     QObject::connect(connectionPtr.data(), SIGNAL(connected()), this, SLOT(connected()));
     QObject::connect(connectionPtr.data(), SIGNAL(disconnected()), this, SLOT(disconnected()));
-    QObject::connect(connectionPtr.data(), SIGNAL(needReconnect()), this, SLOT(doReconnect()));
     QObject::connect(connectionPtr.data(), SIGNAL(destroyed()), this, SLOT(clientDestroyed()));
 
     QObject::connect(connectionPtr.data(), SIGNAL(socketBroken()), this, SLOT(destroyConnection()));
@@ -995,23 +1007,19 @@ void Client::disconnected()
 
     dataCounters.writeCounters();
 
-    if (connectionStatus != Disconnected) {
-        qint64 now = QDateTime::currentMSecsSinceEpoch();
+    if (retryLoginTimer->isActive()) {
+        retryLoginTimer->stop();
+    }
+
+    if (connectionStatus != Disconnected && connectionStatus != LoginFailure) {
         connectionStatus = Disconnected;
         Q_EMIT connectionStatusChanged(connectionStatus);
-        qDebug() << "now:" << now << "lastDisconnect:" << lastDisconnect << "reconnectionInterval:" << reconnectionInterval << "check count:" << (now - lastDisconnect < 60000*reconnectionInterval);
-        if (now - lastDisconnect < 60000*reconnectionInterval) {
-            disconnectCount++;
-            qDebug() << "disconnectCount:" << disconnectCount << "reconnectionLimit:" << reconnectionLimit;
-            if (disconnectCount < reconnectionLimit) {
-                networkStatusChanged(isOnline);
-            }
+
+        lastReconnect = reconnectionInterval;
+        retryLoginTimer->start(reconnectInterval * 1000);
+        if (reconnectionInterval < 120) {
+            reconnectionInterval += lastReconnect;
         }
-        else {
-            disconnectCount = 1;
-            networkStatusChanged(isOnline);
-        }
-        lastDisconnect = now;
     }
     else {
         disconnectCount = 0;
@@ -1020,7 +1028,7 @@ void Client::disconnected()
 
 void Client::destroyConnection()
 {
-    doReconnect();
+    doCheckNetworkStatus();
 }
 
 void Client::synchronizeContacts()
@@ -1068,6 +1076,15 @@ void Client::wakeupStopped()
     qDebug() << "WAKEUP STOPPED! WHAT SHOULD I DO NOW!?";
 }
 
+void Client::showPendingNotifications()
+{
+    foreach (const QString &jid, _notificationJid.keys()) {
+        if (_notificationJid.value(jid) && !_notificationJid.value(jid)->isPublished()) {
+            _notificationJid.value(jid)->publish();
+        }
+    }
+}
+
 void Client::synchronizePhonebook()
 {
     // Contacts syncer
@@ -1086,7 +1103,12 @@ void Client::setActiveJid(const QString &jid)
     setUnreadCount(jid, 0);
     if (_notificationJid.contains(jid) && _notificationJid[jid]) {
         qDebug() << "clear" << jid << "notifications";
-        _notificationJid[jid]->remove();
+        if (_notificationJid[jid]->isPublished()) {
+            _notificationJid[jid]->remove();
+        }
+        if (_notificationJid[jid]) {
+            delete _notificationJid[jid];
+        }
         _notificationJid[jid] = 0;
     }
 }
@@ -1210,6 +1232,12 @@ void Client::connectionClosed()
     qDebug() << "Stopping timers.";
     pendingMessagesTimer->stop();
 
+    if (retryLoginTimer->isActive()) {
+        retryLoginTimer->stop();
+    }
+    reconnectInterval = 1;
+    lastReconnect = 1;
+
     // Sometimes the network is available but there was an error
     // because a DNS problem or can't reach the server at the moment.
     // In these cases the client should retry
@@ -1221,15 +1249,11 @@ void Client::connectionClosed()
             if (!isRegistered)
             {
                 // Immediately try to re-register
-                if (retryLoginTimer->isActive()) {
-                    retryLoginTimer->stop();
-                }
                 QTimer::singleShot(0,this,SLOT(verifyAndConnect()));
             }
             else
             {
-                qDebug() << "Mitakuuluu will retry the connection in 10 seconds.";
-                retryLoginTimer->start(RETRY_LOGIN_INTERVAL);
+                verifyAndConnect();
             }
         }
         else
@@ -1757,6 +1781,8 @@ void Client::recheckAccountAndConnect()
     Q_EMIT connectionStatusChanged(connectionStatus);
 
     disconnectCount = 0;
+    reconnectInterval = 1;
+    lastReconnect = 1;
 
     isOnline = manager->isOnline();
     networkStatusChanged(isOnline);
@@ -2764,7 +2790,7 @@ void Client::forceConnection()
         delete session;
     session = new QNetworkSession(manager->defaultConfiguration(), this);
     qDebug() << "session:" << session->isOpen() << "online:" << manager->isOnline();
-    if (!session->isOpen()) {
+    if (!manager->isOnline()) {
         openConnectionDialog();
     }
     else {
@@ -3044,7 +3070,10 @@ void Client::dbResults(const QVariant &result)
                     showOfflineNotifications();
             }
             else {
-                notification->publish();
+                //if (!_pendingNotificationsTimer->isActive()) {
+                    notification->publish();
+                //    _pendingNotificationsTimer->start();
+                //}
                 if (_notificationJid.contains(jid) && _notificationJid[jid]) {
                     _notificationJid[jid]->remove();
                     _notificationJid[jid] = 0;

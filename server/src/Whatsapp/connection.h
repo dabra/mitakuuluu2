@@ -460,7 +460,6 @@ private:
 signals:
     void connected();
     void disconnected();
-    void needReconnect();
     void socketBroken();
 
     void authSuccess(const QString &creation, const QString &expiration,
