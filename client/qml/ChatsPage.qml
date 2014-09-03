@@ -170,6 +170,13 @@ Page {
                 })
             }
 
+            function clearChat() {
+                remorseAction(qsTr("Clear chat history", "Delete contact remorse action text"),
+                function() {
+                    ContactsBaseModel.clearChat(model.jid)
+                })
+            }
+
             function leaveGroup() {
                 remorseAction(qsTr("Leave group %1", "Group leave remorse action text").arg(model.nickname),
                 function() {
@@ -404,15 +411,19 @@ Page {
                     }
 
                     MenuItem {
-                        text: (model.jid.indexOf("-") > 0)
-                                ? qsTr("Leave group", "Contact context menu leave group item")
-                                : qsTr("Delete", "Contact context menu delete contact item")
+                        text: qsTr("Leave group", "Contact context menu leave group item")
+                        enabled: Mitakuuluu.connectionStatus === Mitakuuluu.LoggedIn
+                        visible: model.jid.indexOf("-") > 0
+                        onClicked: {
+                            leaveGroup()
+                        }
+                    }
+
+                    MenuItem {
+                        text: qsTr("Clear chat history", "Contact context menu delete contact item")
                         enabled: Mitakuuluu.connectionStatus === Mitakuuluu.LoggedIn
                         onClicked: {
-                            if (model.jid.indexOf("-") > 0)
-                                leaveGroup()
-                            else
-                                removeContact()
+                            clearChat()
                         }
                     }
 

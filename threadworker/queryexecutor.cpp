@@ -190,6 +190,10 @@ void QueryExecutor::processQuery(const QVariant &msg)
             searchMessage(query);
             break;
         }
+        case QueryType::ContactsClearConversation: {
+            clearConversation(query);
+            break;
+        }
         default: {
             break;
         }
@@ -955,6 +959,15 @@ void QueryExecutor::searchMessage(QVariantMap &query)
         messages.append(message);
     }
     query["messages"] = messages;
+
+    Q_EMIT actionDone(query);
+}
+
+void QueryExecutor::clearConversation(QVariantMap &query)
+{
+    QString jid = query["jid"].toString();
+    QString table = jid.split("@").first().replace("-", "g");
+    db.exec(QString("DELETE FROM u%1;").arg(table));
 
     Q_EMIT actionDone(query);
 }

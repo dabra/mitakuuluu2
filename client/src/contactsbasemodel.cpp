@@ -537,6 +537,10 @@ void ContactsBaseModel::dbResults(const QVariant &result)
         checkTotalUnread();
         break;
     }
+    case QueryType::ContactsClearConversation: {
+        reloadContact(reply["jid"].toString());
+        break;
+    }
     }
 }
 
@@ -600,4 +604,13 @@ void ContactsBaseModel::requestAvatar(const QString &jid)
     if (iface) {
         iface->call(QDBus::NoBlock, "getPicture", jid);
     }
+}
+
+void ContactsBaseModel::clearChat(const QString &jid)
+{
+    QVariantMap query;
+    query["type"] = QueryType::ContactsClearConversation;
+    query["jid"] = jid;
+    query["uuid"] = uuid;
+    dbExecutor->queueAction(query);
 }

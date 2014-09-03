@@ -109,6 +109,13 @@ Page {
             }
 
             MenuItem {
+                text: qsTr("Clear chat history", "User profile page menu item")
+                onClicked: {
+                    ContactsBaseModel.clearChat(page.jid)
+                }
+            }
+
+            MenuItem {
                 text: qsTr("Save chat history", "User profile page menu item")
                 onClicked: {
                     Mitakuuluu.saveHistory(page.jid, page.pushname)

@@ -31,6 +31,7 @@ namespace QueryType {
         ContactsMuteGroup,
         ContactsGetMuted,
         ContactsGroupParticipants,
+        ContactsClearConversation,
         ConversationLoadLast = 100,
         ConversationLoadNext,
         ConversationGetMessage,
@@ -105,6 +106,7 @@ private:
     void groupParticipants(QVariantMap &query);
     void getConversationCount(QVariantMap &query);
     void searchMessage(QVariantMap &query);
+    void clearConversation(QVariantMap &query);
 
 private:
     ThreadWorker m_worker;

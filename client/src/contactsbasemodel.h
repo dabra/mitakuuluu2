@@ -41,6 +41,7 @@ public slots:
     QColor getColorForJid(const QString &jid);
     void renameContact(const QString &jid, const QString &name);
     void requestAvatar(const QString &jid);
+    void clearChat(const QString &jid);
 
     void clear();
     void contactsChanged();
