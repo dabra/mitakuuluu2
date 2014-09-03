@@ -252,11 +252,6 @@ Client::Client(QObject *parent) : QObject(parent)
     connect(keepalive, SIGNAL(running()), this, SLOT(checkActivity()));
     connect(keepalive, SIGNAL(stopped()), this, SLOT(wakeupStopped()));
 
-    //_pendingNotificationsTimer = new QTimer(this);
-    //_pendingNotificationsTimer->setSingleShot(true);
-    //_pendingNotificationsTimer->setInterval(5000);
-    //QObject::connect(_pendingNotificationsTimer, SIGNAL(timeout()), this, SLOT(showPendingNotifications()));
-
     recheckAccountAndConnect();
 }
 
