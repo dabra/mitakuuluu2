@@ -9,6 +9,8 @@ Page {
 
     property string method: "sms"
 
+    property bool canSendLogs: false
+
     Component.onCompleted: {
         loadCountryCode(Mitakuuluu.mcc)
         Mitakuuluu.checkAndroid()
@@ -28,6 +30,7 @@ Page {
             busy.hide()
             errorArea.show(qsTr("Registration failed\n\n", "Red registration failed screen text") + parseServerReply(reason))
             codeField.visible = false
+            canSendLogs = true
         }
         onAccountExpired: {
             busy.hide()
@@ -37,6 +40,7 @@ Page {
         onCodeRequestFailed: {
             busy.hide()
             errorArea.show(qsTr("Code request failed\n\n", "Red code request failed screen text") + parseServerReply(serverReply))
+            canSendLogs = true
         }
         onCodeRequested: {
             busy.hide()
@@ -66,6 +70,14 @@ Page {
         contentHeight: content.height
 
         PullDownMenu {
+            MenuItem {
+                text: qsTr("Send logfile to author")
+                visible: canSendLogs
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("SendLogs.qml"))
+                }
+            }
+
             MenuItem {
                 text: qsTr("I have code")
                 enabled: phoneField.text.length > 0 && pushname.text.length > 0 && !busy.running
