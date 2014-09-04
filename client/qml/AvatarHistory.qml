@@ -125,6 +125,14 @@ Page {
                             }
                         }
                     }
+                    
+                    MenuItem {
+                        text: qsTr("Open in Gallery")
+                        visible: true
+                        onClicked: {
+                            Qt.openUrlExternally(avatarGrid.expandItem.source)
+                        }
+                    }
 
                     MenuItem {
                         text: qsTr("Save to Gallery")
